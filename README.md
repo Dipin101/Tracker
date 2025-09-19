@@ -10,6 +10,14 @@ This is a Tracker App to track the following
 ### React
 
 -Used React Router V6 with Browserreact and Routes to configure the app for 09/19/2025 with Navbar and page routes
+Folder Structure
+-Components
+--Navbar.jsx
+-pages
+--Homepage.jsx
+--Signin.jsx
+-Router
+--AppRoutes.jsx
 
 ### Vite
 
