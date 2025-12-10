@@ -1,22 +1,27 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const Signin = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     try {
-      const res = await fetch("http://localhost:3000/api/test", {
+      const res = await fetch("http://localhost:3000/api/users/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ test: "ping" }),
+        body: JSON.stringify({ email: data.email, password: data.password }),
       });
       const result = await res.json();
-      console.log(result);
-      alert(result.message);
+      if (res.ok) {
+        navigate("/dashboard");
+      } else {
+        console.log(result.error || "Login failed");
+      }
     } catch (error) {
       console.log(error);
       alert("Something went wrong");
@@ -34,7 +39,7 @@ const Signin = () => {
           className="bg-gray-200"
           type="email"
           placeholder="Email"
-          {...register("Email", {
+          {...register("email", {
             required: true,
             pattern:
               /^(?=.*[A-Za-z])(?=.*\d)[\w\s]{8,}\d+@(gmail|yaho|hotmail|outlook|rocketmail)\.com$/i,
@@ -48,7 +53,7 @@ const Signin = () => {
           className="bg-gray-200"
           type="password"
           placeholder="Password"
-          {...register("Password", {
+          {...register("password", {
             required: true,
             minLength: 7,
             maxLength: 100,
