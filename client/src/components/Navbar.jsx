@@ -3,12 +3,20 @@ import { NavLink } from "react-router-dom";
 const Navbar = () => {
   return (
     <div>
-      <nav className="navbar flex justify-between items-center text-sm bg-gray-800 text-white px-4 py-2 w-full">
-        <div className="navbar-left flex items-start gap-x-4">
-          <NavLink to="/home">OneApp</NavLink>
+      <nav className="flex items-center justify-between bg-gray-800 text-white px-4 py-3 w-full">
+        {/* LEFT */}
+        <div className="flex items-center">
+          <NavLink
+            to="/home"
+            className="text-lg md:text-xl font-bold uppercase"
+          >
+            OneApp
+          </NavLink>
         </div>
-        <div className="navbar-center ">
-          <ul className="nav-links flex justify-center items-center gap-x-4">
+
+        {/* CENTER - desktop only */}
+        <div className="md:flex">
+          <ul className="flex items-center gap-x-8 text-3xl">
             <li>
               <NavLink to="/products">Products</NavLink>
             </li>
@@ -20,16 +28,18 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <div className="navbar-right flex justify-end items-end gap-x-4">
+
+        {/* RIGHT */}
+        <div className="flex items-center gap-x-3">
           <NavLink
             to="/signup"
-            className="signup bg-green-400 text-white px-3 py-1 rounded transition-transform duration-150 active:scale-95 hover:bg-green-500"
+            className="bg-green-500 px-3 py-1.5 rounded text-2xl md:text-2xl hover:bg-green-600 transition"
           >
             Sign Up
           </NavLink>
           <NavLink
             to="/signin"
-            className="signin  bg-green-400 text-white px-3 py-1 rounded transition-transform duration-150 active:scale-95 hover:bg-green-500"
+            className="bg-green-500 px-3 py-1.5 rounded text-2xl md:text-2xl hover:bg-green-600 transition"
           >
             Sign In
           </NavLink>

@@ -5,7 +5,12 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   phone: { type: Number, required: true },
-  password: { type: String, required: true },
+  firebaseUid: { type: String, required: true, unique: true },
+  provider: {
+    type: String,
+    enum: ["password", "google"],
+    required: true,
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

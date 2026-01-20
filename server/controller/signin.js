@@ -1,20 +1,17 @@
-const bcrypt = require("bcrypt");
-const User = require("../models/Users");
+const Users = require("../models/Users");
 
 const signin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { firebaseUid } = req.body;
 
-    const user = await User.findOne({ email });
+    if (!firebaseUid) {
+      return res.status(404).json({ error: "Firebase UID is required" });
+    }
+
+    const user = await Users.findOne({ firebaseUid });
 
     if (!user) {
       return res.status(400).json({ error: "User not found" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ error: "Invalid password" });
     }
 
     res.status(200).json({ message: "Login successful" });

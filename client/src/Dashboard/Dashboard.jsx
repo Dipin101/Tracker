@@ -1,25 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
+import Sidebar from "./components/Sidebar";
 const Dashboard = () => {
   return (
     <div className="container flex max-w-screen h-screen">
-      <div className="sidemenu bg-amber-800 w-1/5 h-screen">
-        <div className="title uppercase font-bold text-white text-4xl mt-5 mb-5 pl-3 pr-3">
-          OneApp
-        </div>
-        <div className="text-2xl text-white ml-3 flex flex-col">
-          <Link to="#" className="pt-3 pb-3">
-            Habit Tracker
-          </Link>
-          <Link to="#" className="pt-3 pb-3">
-            Expense Tracker
-          </Link>
-          <Link to="#" className="pt-3 pb-3">
-            Job Tracker
-          </Link>
-        </div>
-      </div>
+      <Sidebar />
       <div className="content bg-amber-300 w-screen h-screen">
         <div className="top flex gap-5 mt-5 mb-5 pl-3 text-4xl">
           <div className="title uppercase font-bold text-white ">Analytics</div>
