@@ -28,3 +28,8 @@ Folder Structure
 ### Express
 
 ### MongoDB
+
+Worked on polishing some UI.
+Implemented firebase to authenticate the email password.
+Stored it in mongodb.
+Protected the route and localstorage. 

@@ -2,14 +2,25 @@ const User = require("../models/Users");
 
 const register = async (req, res) => {
   try {
-    console.log("Received body:", req.body);
-    const { firstName, lastName, email, phone, firebaseUid } = req.body;
+    let { firstName, lastName, email, phone, firebaseUid } = req.body;
+
+    console.log(phone);
+    const phoneNumber = Number(phone);
 
     //checking if the user already exists in MongoDB
     const existingUser = await User.findOne({ firebaseUid });
     if (existingUser) {
       console.log("User already exists");
-      return res.status(400).json({ error: "User already exists" });
+      return res.status(400).json({
+        error: "User already exists",
+        user: {
+          firstName: existingUser.firstName,
+          lastName: existingUser.lastName,
+          email: existingUser.email,
+          firebaseUid: existingUser.firebaseUid,
+          phone: existingUser.phone,
+        },
+      });
     }
 
     //store in MongoDb
@@ -17,14 +28,23 @@ const register = async (req, res) => {
       firstName,
       lastName,
       email,
-      phone,
+      phone: phoneNumber,
       firebaseUid,
     });
 
     console.log("saving user to mongoDB", newUser);
     await newUser.save(); // saves user in MongoDB
 
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+        firebaseUid: newUser.firebaseUid,
+        phone: newUser.phone,
+      },
+    });
   } catch (err) {
     console.log("This is from register", err);
     res.status(500).json({ error: "Server error hehee", details: err.message });

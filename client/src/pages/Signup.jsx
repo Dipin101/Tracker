@@ -5,6 +5,8 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Navbar from "../components/Navbar";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { useAuth } from "../context/AuthContext";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,8 +44,9 @@ const Signup = () => {
       });
 
       const result = await res.json();
-      console.log(result);
+      // console.log(result);
       if (res.ok) {
+        console.log("register in manual", result);
         navigate("/signin");
       } else {
         console.log("Server Error", result.error || "Registration failed");
@@ -53,21 +56,29 @@ const Signup = () => {
     }
   };
 
-  // const googleLogin = async () => {
-  //   const provider = new GoogleAuthProvider();
+  const googleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const idToken = await user.getIdToken();
 
-  //   const result = await signInWithPopup(auth, provider);
-  //   const user = result.user;
-  //   const idToken = await user.getIdToken();
+    const res = await fetch("http://localhost:3000/api/users/googleauth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ idToken }),
+    });
+    const data = await res.json();
 
-  //   await fetch("http://localhost:3000/api/users/google-signin", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ idToken }),
-  //   });
-  // };
+    if (res.ok) {
+      console.log("Google Signin working", data);
+      localStorage.setItem("firebaseUid", data.user.firebaseUid);
+      navigate("/dashboard");
+    } else {
+      console.log(data.error);
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col">
@@ -205,17 +216,13 @@ const Signup = () => {
                 >
                   Register
                 </button>
-                <a
-                  href="http://localhost:3000/api/auth/google"
-                  className="w-full md:w-auto"
+                <button
+                  type="button"
+                  className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-3 rounded-full transition transform hover:scale-105 active:scale-100"
+                  onClick={googleLogin}
                 >
-                  <button
-                    type="button"
-                    className="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-3 rounded-full transition transform hover:scale-105 active:scale-100"
-                  >
-                    Sign in with Google
-                  </button>
-                </a>
+                  Sign in with Google
+                </button>
               </div>
             </form>
           </div>
