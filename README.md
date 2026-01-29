@@ -1,8 +1,9 @@
-# React + Vite
+# React + Vite One App
 
 This is a Tracker App to track the following
+-Track your habit
+A full-stack web app that helps users track daily and weekly habits, monitor streaks, and visualize progress over time. Built with React, Node.js, MongoDB, and Firebase authentication.
 -Track your job application progress
--Track your todo list project
 -Track your expenses project
 
 ## Stacks used in this project's are
@@ -29,7 +30,19 @@ Folder Structure
 
 ### MongoDB
 
-Worked on polishing some UI.
-Implemented firebase to authenticate the email password.
-Stored it in mongodb.
-Protected the route and localstorage. 
+## Features
+
+- Google Sign-In authentication using Firebase
+- Manual signup and login
+- Protected dashboard route for authenticated users
+- Add, edit, and delete habits
+- Track daily and weekly streaks
+- Update user profile (name, phone, email)
+- Persist data using MongoDB
+
+## Tech Stack
+
+- Frontend: React, React Hook Form, TailwindCSS
+- Backend: Node.js, Express.js
+- Database: MongoDB, Mongoose
+- Authentication: Firebase (Google Sign-In + Manual)
