@@ -7,7 +7,7 @@ import Dashboard from "../Dashboard/Dashboard";
 import HabitTrack from "../pages/HabitTrack";
 import ExpenseTrack from "../pages/ExpenseTrack";
 import JobTrack from "../pages/JobTrack";
-import ProtectedRoute from "../Dashboard/components/ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
 const AppRoutes = () => {
   return (
