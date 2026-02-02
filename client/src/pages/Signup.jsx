@@ -6,7 +6,6 @@ import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Navbar from "../components/Navbar";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { useAuth } from "../context/AuthContext";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
