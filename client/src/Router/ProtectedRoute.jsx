@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
   // Wait for Firebase to decide
   if (loading) return null; // or spinner
 
-  console.log(user); // checking for user to be null
+  // console.log(user); // checking for user to be null
   if (!user) {
     return <Navigate to="/signin" replace />;
   }

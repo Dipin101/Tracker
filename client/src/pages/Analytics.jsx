@@ -1,11 +1,11 @@
 import React from "react";
 
-const ExpenseTrack = () => {
+const Analytics = () => {
   return (
     <div className="text-black">
-      <h1>Expense Tracker</h1>
+      <h1>Analytics</h1>
     </div>
   );
 };
 
-export default ExpenseTrack;
+export default Analytics;

@@ -45,7 +45,7 @@ const Signup = () => {
       const result = await res.json();
       // console.log(result);
       if (res.ok) {
-        console.log("register in manual", result);
+        // console.log("register in manual", result);
         navigate("/signin");
       } else {
         console.log("Server Error", result.error || "Registration failed");
@@ -71,8 +71,7 @@ const Signup = () => {
     const data = await res.json();
 
     if (res.ok) {
-      console.log("Google Signin working", data);
-      localStorage.setItem("firebaseUid", data.user.firebaseUid);
+      // console.log("Google Signin working", data);
       navigate("/dashboard");
     } else {
       console.log(data.error);

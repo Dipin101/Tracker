@@ -33,7 +33,6 @@ const Signin = () => {
       });
       const result = await res.json();
       if (res.ok) {
-        localStorage.setItem("firebaseUid", uid);
         console.log("Login successful:", result.message);
         navigate("/dashboard");
       } else {
@@ -69,7 +68,7 @@ const Signin = () => {
               <label htmlFor="email" className="flex flex-col gap-1">
                 Email
                 <input
-                  className="p-3 md:p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="p-3 md:p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 leading-normal"
                   type="email"
                   placeholder="Email"
                   {...register("email", {
