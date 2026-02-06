@@ -1,6 +1,6 @@
 const User = require("../models/Users");
 
-const getUser = async () => {
+const getUser = async (req, res) => {
   const { firebaseUid } = req.body;
 
   try {
@@ -15,4 +15,4 @@ const getUser = async () => {
   }
 };
 
-module.exports = User();
+module.exports = getUser;

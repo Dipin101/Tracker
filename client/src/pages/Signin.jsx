@@ -33,7 +33,7 @@ const Signin = () => {
       });
       const result = await res.json();
       if (res.ok) {
-        console.log("Login successful:", result.message);
+        // console.log("Login successful:", result.message);
         navigate("/dashboard");
       } else {
         console.log(result.error || "Login failed");
