@@ -46,3 +46,19 @@ Folder Structure
 - Backend: Node.js, Express.js
 - Database: MongoDB, Mongoose
 - Authentication: Firebase (Google Sign-In + Manual)
+
+:
+
+📅 Progress – Feb 5, 2026
+
+🖥️ Dashboard Layout: Dynamic sidebar replaces top navbar on login; links for Dashboard, Profile, Logout.
+
+📱 Responsive Design: Mobile-first with hamburger menu; sidebar persists on desktop.
+
+🔒 Protected Routes: All dashboard pages (habittrack, expensetrack, jobtrack) nested under <Outlet> and protected.
+
+🗂️ Habit Tracker Planning: Interactive grid planned (habits, daily note, optional sleep tracker); considering splitting into pages with combined analytics.
+
+⚡ UX Improvements: Planning loader / lazy loading for sign-in/sign-out for smoother experience.
+
+📝 Next Steps: Build Habit Tracker component, connect backend, implement loader.
