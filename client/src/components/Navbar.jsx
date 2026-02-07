@@ -6,6 +6,7 @@ import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false); // for mobile menu
   const location = useLocation();
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Navbar = () => {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false);
     });
     return () => unsub();
   }, []);

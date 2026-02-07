@@ -8,8 +8,8 @@ const Dashboardlayout = () => {
       <Navbar />
 
       {/* Content area */}
-      <div className="ml-64 flex-1 p-6 m-4 bg-white rounded shadow min-h-screen">
-        <h1 className="text-2xl font-bold mb-4">Dashboard Content</h1>
+      <div className="ml-64 flex-1 p-6 m-3 bg-white rounded shadow min-h-[calc(100vh-1.5rem)]">
+        <h1 className="text-2xl font-bold mb-2">Dashboard Content</h1>
         {/**This should render the content of the nested route */}
         <Outlet />
       </div>

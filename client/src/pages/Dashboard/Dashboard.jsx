@@ -26,6 +26,12 @@ const Dashboard = () => {
         Welcome to your Dashboard, {userName || "User"}!
       </h1>
       <p>Select an option from the sidebar to get started.</p>
+      <div className="grid grid-cols-4 gap-1">
+        <div className="bg-amber-600 w-[45px] h-[45px]">Card1</div>
+        <div className="bg-amber-600 w-[45px] h-[45px]">Card2</div>
+        <div className="bg-amber-600 w-[45px] h-[45px]">Card3</div>
+        <div className="bg-amber-600 w-[45px] h-[45px]">Card4</div>
+      </div>
     </div>
   );
 };
