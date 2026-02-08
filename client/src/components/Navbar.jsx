@@ -92,16 +92,15 @@ const Navbar = () => {
         <NavLink to="/products">Products</NavLink>
         <NavLink to="/contact">Contact</NavLink>
         <NavLink to="/about">About</NavLink>
-        {!user && (
-          <>
-            <NavLink to="/signup" className="bg-green-500 px-3 py-1 rounded">
-              Sign Up
-            </NavLink>
-            <NavLink to="/signin" className="bg-green-500 px-3 py-1 rounded">
-              Sign In
-            </NavLink>
-          </>
-        )}
+
+        <>
+          <NavLink to="/signup" className="bg-green-500 px-3 py-1 rounded">
+            Sign Up
+          </NavLink>
+          <NavLink to="/signin" className="bg-green-500 px-3 py-1 rounded">
+            Sign In
+          </NavLink>
+        </>
       </div>
 
       {/* Mobile hamburger button */}
