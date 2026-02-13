@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react";
 import { auth } from "../../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Dashboard = () => {
-  const [userName, setUserName] = useState("");
-
+  const [userName, setUserName] = useState(null);
   useEffect(() => {
-    const fetchUser = async () => {
-      const token = auth.currentUser?.uid; // firebaseUid
-      if (!token) return;
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+
+      const idToken = await user.getIdToken();
 
       const res = await fetch("http://localhost:3000/api/users/getUser", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firebaseUid: token }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
       });
       const data = await res.json();
+      // console.log(data);
       if (res.ok) setUserName(data.name);
-    };
+    });
 
-    fetchUser();
+    return () => unsubscribe();
   }, []);
   return (
     <div className="p-4 text-black">

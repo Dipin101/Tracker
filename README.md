@@ -49,16 +49,34 @@ Folder Structure
 
 :
 
-📅 Progress – Feb 5, 2026
+Progress – Feb 5, 2026
 
-🖥️ Dashboard Layout: Dynamic sidebar replaces top navbar on login; links for Dashboard, Profile, Logout.
+Dashboard Layout: Dynamic sidebar replaces top navbar on login; links for Dashboard, Profile, Logout.
 
-📱 Responsive Design: Mobile-first with hamburger menu; sidebar persists on desktop.
+Responsive Design: Mobile-first with hamburger menu; sidebar persists on desktop.
 
-🔒 Protected Routes: All dashboard pages (habittrack, expensetrack, jobtrack) nested under <Outlet> and protected.
+Protected Routes: All dashboard pages (habittrack, expensetrack, jobtrack) nested under <Outlet> and protected.
 
-🗂️ Habit Tracker Planning: Interactive grid planned (habits, daily note, optional sleep tracker); considering splitting into pages with combined analytics.
+Habit Tracker Planning: Interactive grid planned (habits, daily note, optional sleep tracker); considering splitting into pages with combined analytics.
 
-⚡ UX Improvements: Planning loader / lazy loading for sign-in/sign-out for smoother experience.
+UX Improvements: Planning loader / lazy loading for sign-in/sign-out for smoother experience.
 
-📝 Next Steps: Build Habit Tracker component, connect backend, implement loader.
+Progress - Feb 23, 2026
+
+Habit Tracker Layout
+
+Created file-folder style tabs: Memorable Day, Habits to Track, Sleep Cycle.
+
+Implemented Tab component for switching between different content sections.
+
+Added a fixed Add button for adding new habits/events.
+
+Responsiveness & Styling
+
+Made main container responsive using flex and dynamic height (calc method).
+
+Added scrollable content (overflow-auto) for long habit lists.
+
+Tested on mobile, tablet, and desktop — adjusted container heights for small screens.
+
+Worked on flexible container height to avoid overflow issues on screens below 940px.
