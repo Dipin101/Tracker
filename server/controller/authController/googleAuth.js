@@ -1,5 +1,5 @@
-const User = require("../models/Users");
-const admin = require("./firebaseAdmin");
+const User = require("../../models/Users");
+const admin = require("../firebase/firebaseAdmin");
 
 const googleAuth = async (req, res) => {
   try {

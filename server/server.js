@@ -5,9 +5,9 @@ dotenv.config(); // <-- must be first
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const connectDB = require("./controller/db");
+const connectDB = require("./controller/database/db");
 const userRoutes = require("./routes/users");
-const session = require("express-session");
+// const session = require("express-session");
 // const authRoutes = require("./routes/auth"); // Google auth routes
 
 const app = express();

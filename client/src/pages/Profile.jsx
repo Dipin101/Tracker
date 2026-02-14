@@ -1,7 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { auth } from "../firebase";
-import { onAuthStateChanged } from "firebase/auth";
 
 const Profile = () => {
   const [userData, setUserData] = useState({});
@@ -10,6 +9,7 @@ const Profile = () => {
       const user = auth.currentUser;
       if (!user) return;
       const idToken = await user.getIdToken();
+      console.log("token", idToken);
       const res = await fetch("http://localhost:3000/api/users/getProfile", {
         method: "POST",
         headers: {

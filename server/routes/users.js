@@ -1,9 +1,9 @@
 const express = require("express");
-const register = require("../controller/register");
-const signin = require("../controller/signin");
-const googleAuth = require("../controller/googleAuth");
+const register = require("../controller/authController/register");
+const signin = require("../controller/authController/signin");
+const googleAuth = require("../controller/authController/googleAuth");
 const getUser = require("../controller/getUser");
-const getProfile = require("../controller/getProfile");
+const getProfile = require("../controller/profileController/getProfile");
 
 const router = express.Router();
 
