@@ -24,13 +24,14 @@ const SleepDaySchema = new mongoose.Schema({
 const MonthDataSchema = new mongoose.Schema({
   year: { type: Number, required: true },
   month: { type: String, required: true }, // "02" or "February"
+  trackSleep: { type: Boolean, default: false },
   memorable: [HabitDaySchema],
   habits: [HabitSchema],
   sleep: [SleepDaySchema],
 });
 
 const HabitsSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: String, required: true },
   months: [MonthDataSchema], // all months stored in this array
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

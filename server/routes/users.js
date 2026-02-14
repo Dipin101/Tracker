@@ -4,6 +4,7 @@ const signin = require("../controller/authController/signin");
 const googleAuth = require("../controller/authController/googleAuth");
 const getUser = require("../controller/getUser");
 const getProfile = require("../controller/profileController/getProfile");
+const getMonths = require("../controller/habitsController/getMonths");
 
 const router = express.Router();
 
@@ -15,5 +16,8 @@ router.post("/googleauth", googleAuth);
 router.post("/getUser", getUser);
 //Get user data from mongo through firebaseUID
 router.post("/getProfile", getProfile);
+
+//For habits
+router.post("/months", getMonths);
 
 module.exports = router;

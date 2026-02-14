@@ -1,26 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoAddOutline } from "react-icons/io5";
 import Tab from "../components/Tab";
 import MemorableDay from "../components/MemorableDay";
 import SleepCycle from "../components/SleepCycle";
 import HabitsToTrack from "../components/HabitsToTrack";
+import { auth } from "../firebase";
 
 const HabitTrack = () => {
   const [activeTab, setActiveTab] = useState("memorable");
+  const [currentMonthData, setCurrentMonthData] = useState(null);
+  const [trackSleepModal, setTrackSleepModal] = useState(false);
   //for modal
   const [isOpen, setIsOpen] = useState(false);
 
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
-  const [month, setMonth] = useState(currentMonth);
 
   const isOpenModal = () => setIsOpen(true);
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
-    console.log({ currentYear, month });
-    setIsOpen(false);
+    const user = auth.currentUser;
+    if (!user) return console.log("No user logged in");
+    console.log(user.uid, currentYear, currentMonth, trackSleepModal);
+    const backendUrl = "http://localhost:3000/api/users/months";
+    try {
+      const res = await fetch(backendUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.uid, //--> firebase uid
+          year: currentYear,
+          month: currentMonth,
+          trackSleepModal: trackSleepModal,
+        }),
+      });
+
+      if (!res.ok) {
+        try {
+          const errorData = await res.json();
+          console.error("Error adding month:", errorData.message || errorData);
+        } catch {
+          console.error("Error adding month: ", res.statusText);
+        }
+        return;
+      }
+
+      const data = await res.json();
+      console.log("Month added:", data);
+
+      // Update frontend state so tabs show immediately
+      setCurrentMonthData(data.month);
+
+      setIsOpen(false);
+    } catch (err) {
+      console.log("Error");
+    }
   };
 
   const renderContent = () => {
@@ -40,30 +76,46 @@ const HabitTrack = () => {
     <div className="h-[calc(100vh-8rem)] p-4 bg-amber-500 rounded-2xl overflow-auto">
       <h1 className="text-5xl mb-4 font-bold">Welcome to Habit Tracker</h1>
 
-      {/* File Tabs */}
-      <div className="flex border-b border-gray-300 mb-0">
-        <Tab
-          title="Memorable Day"
-          isActive={activeTab === "memorable"}
-          onClick={() => setActiveTab("memorable")}
-        />
-        <Tab
-          title="Habits to Track"
-          isActive={activeTab === "habits"}
-          onClick={() => setActiveTab("habits")}
-        />
-        <Tab
-          title="Sleep Cycle"
-          isActive={activeTab === "sleep"}
-          onClick={() => setActiveTab("sleep")}
-        />
-      </div>
+      {
+        // loading ? (
+        //   <div className="flex items-center justify-center h-full">
+        //     Loading...
+        //   </div>
+        // ) :
+        currentMonthData ? (
+          <>
+            {/* File Tabs */}
+            <div className="flex border-b border-gray-300 mb-0">
+              <Tab
+                title="Memorable Day"
+                isActive={activeTab === "memorable"}
+                onClick={() => setActiveTab("memorable")}
+              />
+              <Tab
+                title="Habits to Track"
+                isActive={activeTab === "habits"}
+                onClick={() => setActiveTab("habits")}
+              />
+              {currentMonthData.trackSleep && (
+                <Tab
+                  title="Sleep Cycle"
+                  isActive={activeTab === "sleep"}
+                  onClick={() => setActiveTab("sleep")}
+                />
+              )}
+            </div>
 
-      {/* Content container (looks like folder content) */}
-      <div className="bg-white p-4 rounded-b-lg shadow border border-t-0 h-[calc(95vh-15rem)] sm:h-[calc(80vh-13rem)] md:h-[calc(85vh-15rem)]">
-        {renderContent()}
-      </div>
-
+            {/* Content container (looks like folder content) */}
+            <div className="bg-white p-4 rounded-b-lg shadow border border-t-0 h-[calc(95vh-15rem)] sm:h-[calc(80vh-13rem)] md:h-[calc(85vh-15rem)]">
+              {renderContent()}
+            </div>
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full text-xl text-gray-700">
+            No data for this month. Click Add + to start tracking.
+          </div>
+        )
+      }
       {/* Fixed Add Button */}
       <button
         className="fixed bottom-10 right-10 w-14 h-14 bg-green-600 rounded-full flex items-center justify-center shadow-lg"
@@ -100,14 +152,22 @@ const HabitTrack = () => {
               <label>
                 Month:
                 <input
-                  type="month"
-                  value={`${currentYear}-${month}`} // current year + selected month
-                  onChange={(e) => setMonth(e.target.value.split("-")[1])} // get only month
-                  min={`${currentYear}-${currentMonth}`} // disable past months
-                  max={`${currentYear}-12`} // disable next year months
-                  className="border rounded px-2 py-1 w-full"
-                  required
+                  type="text"
+                  value={`${now.toLocaleString("default", { month: "long" })} ${currentYear}`}
+                  className="border rounded px-2 py-1 w-full bg-gray-100"
+                  readOnly
                 />
+              </label>
+
+              {/* sleep tracking */}
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={trackSleepModal}
+                  onChange={(e) => setTrackSleepModal(e.target.checked)}
+                  className="w-4 h-4"
+                />
+                Track Your Sleep
               </label>
 
               <button

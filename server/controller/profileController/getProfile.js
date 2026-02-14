@@ -13,7 +13,7 @@ const getProfile = async (req, res) => {
     const uid = decoded.uid;
     const user = await User.findOne({ firebaseUid: uid });
     if (!user) return res.status(404).json({ error: "User not found" });
-    console.log("This is user", user);
+
     res.json({ userData: user });
   } catch (err) {
     console.error(err);
