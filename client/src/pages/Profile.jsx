@@ -9,7 +9,7 @@ const Profile = () => {
       const user = auth.currentUser;
       if (!user) return;
       const idToken = await user.getIdToken();
-      console.log("token", idToken);
+      // console.log("token", idToken);
       const res = await fetch("http://localhost:3000/api/users/getProfile", {
         method: "POST",
         headers: {

@@ -7,6 +7,21 @@ import HabitsToTrack from "../components/HabitsToTrack";
 
 const HabitTrack = () => {
   const [activeTab, setActiveTab] = useState("memorable");
+  //for modal
+  const [isOpen, setIsOpen] = useState(false);
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
+  const [month, setMonth] = useState(currentMonth);
+
+  const isOpenModal = () => setIsOpen(true);
+
+  const handleAdd = (e) => {
+    e.preventDefault();
+    console.log({ currentYear, month });
+    setIsOpen(false);
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -50,9 +65,61 @@ const HabitTrack = () => {
       </div>
 
       {/* Fixed Add Button */}
-      <button className="fixed bottom-10 right-10 w-14 h-14 bg-green-600 rounded-full flex items-center justify-center shadow-lg">
+      <button
+        className="fixed bottom-10 right-10 w-14 h-14 bg-green-600 rounded-full flex items-center justify-center shadow-lg"
+        onClick={isOpenModal}
+      >
         <IoAddOutline size={32} className="text-white" />
       </button>
+
+      {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.5)] flex justify-center items-center text-black z-50">
+          <div className="bg-white rounded-lg p-6 w-96 relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500"
+              onClick={() => setIsOpen(false)}
+            >
+              X
+            </button>
+
+            <h2 className="text-xl font-bold mb-4">Add Month</h2>
+
+            <form onSubmit={handleAdd} className="flex flex-col gap-4">
+              <label>
+                Year:
+                <input
+                  type="number"
+                  value={currentYear}
+                  min={currentYear}
+                  className="border rounded px-2 py-1 w-full"
+                  readOnly
+                />
+              </label>
+
+              <label>
+                Month:
+                <input
+                  type="month"
+                  value={`${currentYear}-${month}`} // current year + selected month
+                  onChange={(e) => setMonth(e.target.value.split("-")[1])} // get only month
+                  min={`${currentYear}-${currentMonth}`} // disable past months
+                  max={`${currentYear}-12`} // disable next year months
+                  className="border rounded px-2 py-1 w-full"
+                  required
+                />
+              </label>
+
+              <button
+                type="submit"
+                className="bg-green-500 text-white px-4 py-2 rounded"
+              >
+                Add
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
