@@ -4,7 +4,10 @@ const signin = require("../controller/authController/signin");
 const googleAuth = require("../controller/authController/googleAuth");
 const getUser = require("../controller/getUser");
 const getProfile = require("../controller/profileController/getProfile");
-const getMonths = require("../controller/habitsController/getMonths");
+const postMonths = require("../controller/habitsController/postMonths");
+const getMonth = require("../controller/habitsController/getMonth");
+const createMemorable = require("../controller/habitsController/createMemorable");
+const getMemorable = require("../controller/habitsController/getMemorable");
 
 const router = express.Router();
 
@@ -18,6 +21,9 @@ router.post("/getUser", getUser);
 router.post("/getProfile", getProfile);
 
 //For habits
-router.post("/months", getMonths);
+router.post("/months", postMonths);
+router.get("/months/:userId/:year/:month", getMonth);
+router.post("/memorable", createMemorable);
+router.get("/months/:userId/:year/:month/:day", getMemorable);
 
 module.exports = router;

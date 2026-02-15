@@ -80,3 +80,7 @@ Added scrollable content (overflow-auto) for long habit lists.
 Tested on mobile, tablet, and desktop — adjusted container heights for small screens.
 
 Worked on flexible container height to avoid overflow issues on screens below 940px.
+
+Habit Schema working properly and Db is created.
+
+Sleep tracking is optional made a checkbox to toggle to true or false.

@@ -19,11 +19,35 @@ const HabitTrack = () => {
 
   const isOpenModal = () => setIsOpen(true);
 
+  useEffect(() => {
+    const fetchMonth = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/users/months/${user.uid}/${currentYear}/${currentMonth}`,
+        );
+
+        if (!res.ok) {
+          setCurrentMonthData(null);
+          return;
+        }
+        const data = await res.json();
+        setCurrentMonthData(data.month);
+      } catch (err) {
+        console.log("Error fetching month: ", err);
+        setCurrentMonthData(null);
+      }
+    };
+    fetchMonth();
+  }, []);
+
   const handleAdd = async (e) => {
     e.preventDefault();
     const user = auth.currentUser;
     if (!user) return console.log("No user logged in");
-    console.log(user.uid, currentYear, currentMonth, trackSleepModal);
+    // console.log(user.uid, currentYear, currentMonth, trackSleepModal);
     const backendUrl = "http://localhost:3000/api/users/months";
     try {
       const res = await fetch(backendUrl, {
@@ -48,7 +72,7 @@ const HabitTrack = () => {
       }
 
       const data = await res.json();
-      console.log("Month added:", data);
+      // console.log("Month added:", data);
 
       // Update frontend state so tabs show immediately
       setCurrentMonthData(data.month);
@@ -76,46 +100,60 @@ const HabitTrack = () => {
     <div className="h-[calc(100vh-8rem)] p-4 bg-amber-500 rounded-2xl overflow-auto">
       <h1 className="text-5xl mb-4 font-bold">Welcome to Habit Tracker</h1>
 
-      {
-        // loading ? (
+      {/* // loading ? (
         //   <div className="flex items-center justify-center h-full">
         //     Loading...
         //   </div>
-        // ) :
-        currentMonthData ? (
-          <>
-            {/* File Tabs */}
-            <div className="flex border-b border-gray-300 mb-0">
-              <Tab
-                title="Memorable Day"
-                isActive={activeTab === "memorable"}
-                onClick={() => setActiveTab("memorable")}
-              />
-              <Tab
-                title="Habits to Track"
-                isActive={activeTab === "habits"}
-                onClick={() => setActiveTab("habits")}
-              />
-              {currentMonthData.trackSleep && (
-                <Tab
-                  title="Sleep Cycle"
-                  isActive={activeTab === "sleep"}
-                  onClick={() => setActiveTab("sleep")}
-                />
-              )}
-            </div>
+        // ) : */}
 
-            {/* Content container (looks like folder content) */}
-            <div className="bg-white p-4 rounded-b-lg shadow border border-t-0 h-[calc(95vh-15rem)] sm:h-[calc(80vh-13rem)] md:h-[calc(85vh-15rem)]">
-              {renderContent()}
-            </div>
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full text-xl text-gray-700">
-            No data for this month. Click Add + to start tracking.
+      {/*small header */}
+      {currentMonthData ? (
+        <p className="text-gray-800 mb-4">
+          Tracking for{" "}
+          {new Date(
+            currentMonthData.year,
+            currentMonthData.month - 1,
+          ).toLocaleString("default", { month: "long", year: "numeric" })}
+        </p>
+      ) : (
+        <p className="text-gray-600 mb-4">
+          You haven't started tracking this month yet.
+        </p>
+      )}
+
+      {currentMonthData ? (
+        <>
+          {/* File Tabs */}
+          <div className="flex border-b border-gray-300 mb-0">
+            <Tab
+              title="Memorable Day"
+              isActive={activeTab === "memorable"}
+              onClick={() => setActiveTab("memorable")}
+            />
+            <Tab
+              title="Habits to Track"
+              isActive={activeTab === "habits"}
+              onClick={() => setActiveTab("habits")}
+            />
+            {currentMonthData.trackSleep && (
+              <Tab
+                title="Sleep Cycle"
+                isActive={activeTab === "sleep"}
+                onClick={() => setActiveTab("sleep")}
+              />
+            )}
           </div>
-        )
-      }
+
+          {/* Content container (looks like folder content) */}
+          <div className="bg-white p-4 rounded-b-lg shadow border border-t-0 h-[calc(95vh-15rem)] sm:h-[calc(80vh-13rem)] md:h-[calc(85vh-15rem)]">
+            {renderContent()}
+          </div>
+        </>
+      ) : (
+        <div className="flex items-center justify-center h-full text-xl text-gray-700">
+          No data for this month. Click Add + to start tracking.
+        </div>
+      )}
       {/* Fixed Add Button */}
       <button
         className="fixed bottom-10 right-10 w-14 h-14 bg-green-600 rounded-full flex items-center justify-center shadow-lg"

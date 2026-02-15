@@ -1,0 +1,36 @@
+const Habits = require("../../models/Habits");
+
+const getMemorable = async (req, res) => {
+  console.log("Hitting api");
+  try {
+    const { userId, year, month, day } = req.params;
+
+    if (!userId || !year || !month || !day) {
+      return res.status(400).json({ message: "Missing required params" });
+    }
+
+    const userHabits = await Habits.findOne({ userId });
+    if (!userHabits) return res.status(404).json({ message: "User not found" });
+
+    const monthData = userHabits.months.find(
+      (m) =>
+        Number(m.year) === Number(year) && String(m.month) === String(month),
+    );
+    if (!monthData)
+      return res.status(404).json({ message: "No month data found" });
+
+    const dayData = monthData.memorable.find(
+      (d) => Number(d.day) === Number(day),
+    );
+
+    if (!dayData)
+      return res.status(404).json({ message: "No summary found for today" });
+
+    res.status(200).json(dayData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = getMemorable;

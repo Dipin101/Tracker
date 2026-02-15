@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 
 const HabitDaySchema = new mongoose.Schema({
+  month: String,
+  year: Number,
   day: Number,
   summary: { type: String, maxlength: 100, default: "" }, // For Memorable/Journal
   journal: { type: String, default: "" },
