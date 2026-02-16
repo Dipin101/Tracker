@@ -24,6 +24,6 @@ router.post("/getProfile", getProfile);
 router.post("/months", postMonths);
 router.get("/months/:userId/:year/:month", getMonth);
 router.post("/memorable", createMemorable);
-router.get("/months/:userId/:year/:month/:day", getMemorable);
+router.get("/memorable/:userId/:year/:month/:day", getMemorable);
 
 module.exports = router;

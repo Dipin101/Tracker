@@ -10,8 +10,9 @@ const MemorableDay = ({ onAdd }) => {
   const [summaryAdded, setSummaryAdded] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [loading, setLoading] = useState(true); // <-- NEW
+  const [loading, setLoading] = useState(true);
 
+  //getting the current date to see if it matches the db
   const today = new Date();
   const day = today.getDate();
   const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -36,6 +37,7 @@ const MemorableDay = ({ onAdd }) => {
         }
 
         const data = await res.json();
+        // console.log(data);
         if (data && data.summary) {
           setSummary(data.summary);
           setJournal(data.journal || "");
@@ -116,11 +118,12 @@ const MemorableDay = ({ onAdd }) => {
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
               maxLength={MAX_SUMMARY_LENGTH}
-              disabled={summaryAdded}
+              readOnly={summaryAdded}
+              // disabled={summaryAdded}
               placeholder={
                 summaryAdded
                   ? "Summary already added for today"
-                  : "Short summary of the day..."
+                  : "Write a short summary of the day..."
               }
               className="border rounded px-2 py-1 w-full"
               rows={1}
@@ -172,7 +175,7 @@ const MemorableDay = ({ onAdd }) => {
             className="bg-green-500 text-white px-4 py-2 rounded w-32"
             disabled={summaryAdded}
           >
-            {summaryAdded ? "Summary Locked" : "Add Day"}
+            {summaryAdded ? "Summary Added" : "Add Day"}
           </button>
         </form>
       </div>

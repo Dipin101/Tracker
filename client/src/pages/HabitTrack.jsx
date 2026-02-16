@@ -7,7 +7,11 @@ import HabitsToTrack from "../components/HabitsToTrack";
 import { auth } from "../firebase";
 
 const HabitTrack = () => {
-  const [activeTab, setActiveTab] = useState("memorable");
+  const [activeTab, setActiveTab] = useState(() => {
+    // read last active tab from localStorage
+    const savedTab = localStorage.getItem("activeTab");
+    return savedTab || "memorable";
+  });
   const [currentMonthData, setCurrentMonthData] = useState(null);
   const [trackSleepModal, setTrackSleepModal] = useState(false);
   //for modal
@@ -18,6 +22,11 @@ const HabitTrack = () => {
   const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
 
   const isOpenModal = () => setIsOpen(true);
+
+  //for state to be active
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
 
   useEffect(() => {
     const fetchMonth = async () => {

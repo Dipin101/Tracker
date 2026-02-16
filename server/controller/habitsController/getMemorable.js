@@ -1,13 +1,15 @@
 const Habits = require("../../models/Habits");
 
 const getMemorable = async (req, res) => {
-  console.log("Hitting api");
   try {
+    // console.log("Hitting api");
     const { userId, year, month, day } = req.params;
 
     if (!userId || !year || !month || !day) {
       return res.status(400).json({ message: "Missing required params" });
     }
+
+    // console.log(month, year);
 
     const userHabits = await Habits.findOne({ userId });
     if (!userHabits) return res.status(404).json({ message: "User not found" });
