@@ -8,6 +8,8 @@ const postMonths = require("../controller/habitsController/postMonths");
 const getMonth = require("../controller/habitsController/getMonth");
 const createMemorable = require("../controller/habitsController/createMemorable");
 const getMemorable = require("../controller/habitsController/getMemorable");
+const postHabits = require("../controller/habitsController/postHabits");
+const getHabits = require("../controller/habitsController/getHabits");
 
 const router = express.Router();
 
@@ -25,5 +27,7 @@ router.post("/months", postMonths);
 router.get("/months/:userId/:year/:month", getMonth);
 router.post("/memorable", createMemorable);
 router.get("/memorable/:userId/:year/:month/:day", getMemorable);
+router.post("/habits", postHabits);
+router.get("/habits/:userId", getHabits);
 
 module.exports = router;

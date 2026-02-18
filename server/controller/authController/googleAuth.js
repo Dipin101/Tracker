@@ -32,8 +32,7 @@ const googleAuth = async (req, res) => {
       });
 
       await user.save();
-      console.log("New user registered via Google:", user);
-    } else {
+      // console.log("New user registered via Google:", user);    } else {
       console.log("Existing user signed in via Google:", user);
     }
 

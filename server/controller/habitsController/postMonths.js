@@ -2,7 +2,8 @@ const Habits = require("../../models/Habits");
 
 const getMonths = async (req, res) => {
   try {
-    const { userId, year, month, trackSleepModal } = req.body;
+    const { userId, year, month, trackSleepModal, sleepTrackingStart } =
+      req.body;
 
     if (!userId || !year || !month) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -32,6 +33,7 @@ const getMonths = async (req, res) => {
       habits: [],
       sleep: [],
       trackSleep: trackSleepModal,
+      sleepTrackingStart: tracksleepModal ? sleepTrackingStart : null, //starting date
     });
 
     //  Save document

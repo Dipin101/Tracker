@@ -8,14 +8,24 @@ const HabitDaySchema = new mongoose.Schema({
   journal: { type: String, default: "" },
 });
 
-const HabitSchema = new mongoose.Schema({
-  title: String,
+const CommentSchema = new mongoose.Schema({
+  date: { type: String, required: true },
+  text: { type: String, default: "" },
+});
+
+const HabitDayStatusSchema = new mongoose.Schema({
+  date: { type: String, required: true },
   status: {
     type: String,
-    enum: ["not started", "in progress", "completed"],
-    default: "not started",
+    enum: ["completed", "in progress", "not completed"],
+    default: "in progress",
   },
-  comment: { type: String, default: "" },
+});
+
+const HabitSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  status: [HabitDayStatusSchema],
+  comment: [CommentSchema],
 });
 
 const SleepDaySchema = new mongoose.Schema({
@@ -27,6 +37,7 @@ const MonthDataSchema = new mongoose.Schema({
   year: { type: Number, required: true },
   month: { type: String, required: true }, // "02" or "February"
   trackSleep: { type: Boolean, default: false },
+  sleepTrackingStart: { type: Date, default: null },
   memorable: [HabitDaySchema],
   habits: [HabitSchema],
   sleep: [SleepDaySchema],

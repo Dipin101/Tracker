@@ -14,15 +14,15 @@ const createMemorable = async (req, res) => {
     const userHabits = await Habits.findOne({ userId });
     if (!userHabits) return res.status(404).json({ message: "User not found" });
 
-    console.log(userHabits);
-    console.log(year, month, day, summary);
+    // console.log(userHabits);
+    // console.log(year, month, day, summary);
     // Find the correct month
     const monthData = userHabits.months.find(
       (m) =>
         Number(m.year) === Number(year) && String(m.month) === String(month),
     );
 
-    console.log(monthData);
+    // console.log(monthData);
     if (!monthData) {
       return res.status(404).json({ message: "Month not found for this user" });
     }

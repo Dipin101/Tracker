@@ -20,6 +20,15 @@ const HabitTrack = () => {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
+  const estNowStr = new Date().toLocaleString("en-US", {
+    timeZone: "America/Toronto",
+  });
+
+  // //simulating to see next month
+  // const now = new Date();
+  // now.setMonth(now.getMonth() + 1); // simulate next month
+  // const currentYear = now.getFullYear();
+  // const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
 
   const isOpenModal = () => setIsOpen(true);
 
@@ -58,6 +67,7 @@ const HabitTrack = () => {
     if (!user) return console.log("No user logged in");
     // console.log(user.uid, currentYear, currentMonth, trackSleepModal);
     const backendUrl = "http://localhost:3000/api/users/months";
+
     try {
       const res = await fetch(backendUrl, {
         method: "POST",
@@ -67,6 +77,7 @@ const HabitTrack = () => {
           year: currentYear,
           month: currentMonth,
           trackSleepModal: trackSleepModal,
+          sleepTrackingStart: new Date(estNowStr),
         }),
       });
 
@@ -99,7 +110,13 @@ const HabitTrack = () => {
       case "habits":
         return <HabitsToTrack />;
       case "sleep":
-        return <SleepCycle />;
+        return (
+          <SleepCycle
+            startDate={
+              currentMonthData?.sleepTrackingStart || new Date(estNowStr)
+            }
+          />
+        );
       default:
         return null;
     }
