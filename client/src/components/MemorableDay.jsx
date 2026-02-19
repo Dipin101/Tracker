@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth } from "../firebase";
+import { DateTime } from "luxon";
 
 const MemorableDay = ({ onAdd }) => {
   const MAX_SUMMARY_LENGTH = 100;
@@ -10,20 +11,20 @@ const MemorableDay = ({ onAdd }) => {
   const [summaryAdded, setSummaryAdded] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   //getting the current date to see if it matches the db
-  const today = new Date();
-  const day = today.getDate();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const year = today.getFullYear();
+  const nowToronto = DateTime.now().setZone("America/Toronto");
+  const day = String(nowToronto.day).padStart(2, "0");
+  const month = String(nowToronto.month).padStart(2, "0");
+  const year = nowToronto.year;
 
   // Fetch today's summary
   useEffect(() => {
     const fetchTodaySummary = async () => {
       const user = auth.currentUser;
       if (!user) {
-        setLoading(false);
+        // setLoading(false);
         return;
       }
 
@@ -32,7 +33,7 @@ const MemorableDay = ({ onAdd }) => {
           `http://localhost:3000/api/users/memorable/${user.uid}/${year}/${month}/${day}`,
         );
         if (!res.ok) {
-          setLoading(false);
+          // setLoading(false);
           return;
         }
 
@@ -46,8 +47,6 @@ const MemorableDay = ({ onAdd }) => {
         }
       } catch (err) {
         console.error("Error fetching today's summary:", err);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -94,20 +93,15 @@ const MemorableDay = ({ onAdd }) => {
   };
 
   // If loading, don't render the form yet
-  if (loading) {
-    return <p className="text-black">Loading today's summary...</p>;
-  }
+  // if (loading) {
+  //   return <p className="text-black">Loading today's summary...</p>;
+  // }
 
   return (
     <div className="flex flex-col gap-4 text-black">
       <div className="p-4 bg-green-300 rounded shadow flex flex-col gap-2">
         <h2 className="text-xl font-bold">Memorable Day</h2>
-        <p>
-          Today is{" "}
-          <strong>
-            {day}/{month}/{year}
-          </strong>
-        </p>
+        <p>Today is {nowToronto.toFormat("d LLLL yyyy")}</p>
         <p>Write highlights or memorable moments of your day.</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { FaCheck, FaComment, FaHourglassHalf, FaTimes } from "react-icons/fa";
 import { auth } from "../firebase";
+import { DateTime } from "luxon";
 
 const MAX_HABITS = 10;
 
@@ -21,20 +22,16 @@ const HabitsToTrack = () => {
   const commentRefs = useRef(null);
 
   // Date
-  const now = new Date();
-  // YYYY-MM-DD -->EDT time
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
   // const today = new Date().toISOString().split("T")[0]; //--> Standard gmt time
   //simulated
   // const simulatedDate = new Date();
   // simulatedDate.setDate(simulatedDate.getDate() + 1); // add 1 day
   // const today = simulatedDate.toISOString().split("T")[0];
-
-  const displayMonth = now.toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  });
+  // YYYY-MM-DD -->EDT time
+  const nowToronto = DateTime.now().setZone("America/Toronto"); // current Toronto time
+  const today = nowToronto.toFormat("yyyy-MM-dd"); // for keys and payloads
+  const currentMonth = String(nowToronto.month).padStart(2, "0"); // 1–12
+  const displayMonth = nowToronto.toFormat("LLLL yyyy");
 
   // Status constants
   const STATUS = {
@@ -236,7 +233,7 @@ const HabitsToTrack = () => {
     if (!user) return;
 
     const todayMonth = currentMonth;
-    const todayYear = new Date().getFullYear();
+    const todayYear = nowToronto.year;
 
     //getting all habits
     const habitsPayload = saved.map((habit, index) => ({
@@ -287,7 +284,7 @@ const HabitsToTrack = () => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const currentYear = new Date().getFullYear();
+    const currentYear = nowToronto.year;
 
     try {
       const res = await fetch(
@@ -502,7 +499,7 @@ const HabitsToTrack = () => {
           <div className="bg-white p-6 rounded-xl w-96 flex flex-col gap-4 shadow-lg">
             <h3 className="text-lg font-semibold">Add Comment</h3>
             <h4 className="text-sm text-gray-600">
-              {`Date: ${new Date().getDate()} ${new Date().toLocaleString("default", { month: "long" })} ${new Date().getFullYear()}`}
+              {`Date: ${nowToronto.toFormat("d LLLL yyyy")}`}
             </h4>
             <textarea
               ref={commentRefs}

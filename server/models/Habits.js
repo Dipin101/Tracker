@@ -29,13 +29,15 @@ const HabitSchema = new mongoose.Schema({
 });
 
 const SleepDaySchema = new mongoose.Schema({
-  day: Number,
+  day: { type: Number, required: true },
+  month: { type: Number, required: true },
+  year: { type: Number, required: true },
   hours: { type: Number, default: 0 },
 });
 
 const MonthDataSchema = new mongoose.Schema({
   year: { type: Number, required: true },
-  month: { type: String, required: true }, // "02" or "February"
+  month: { type: String, required: true },
   trackSleep: { type: Boolean, default: false },
   sleepTrackingStart: { type: Date, default: null },
   memorable: [HabitDaySchema],

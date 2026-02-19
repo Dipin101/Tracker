@@ -10,6 +10,11 @@ const createMemorable = require("../controller/habitsController/createMemorable"
 const getMemorable = require("../controller/habitsController/getMemorable");
 const postHabits = require("../controller/habitsController/postHabits");
 const getHabits = require("../controller/habitsController/getHabits");
+const postSleep = require("../controller/habitsController/postSleep");
+const getSleep = require("../controller/habitsController/getSleep");
+const getQuote = require("../controller/habitsController/getQuote");
+const postStreak = require("../controller/dashboardController/postStreak");
+const getTodayCompletion = require("../controller/dashboardController/getTodayCompletion");
 
 const router = express.Router();
 
@@ -29,5 +34,14 @@ router.post("/memorable", createMemorable);
 router.get("/memorable/:userId/:year/:month/:day", getMemorable);
 router.post("/habits", postHabits);
 router.get("/habits/:userId", getHabits);
+router.post("/sleep/", postSleep);
+router.get("/sleep/:userId/:year/:month", getSleep);
+
+//fetching a quote
+router.get("/quote", getQuote);
+//fetching streak
+router.post("/streak", postStreak);
+//calculating completion
+router.post("/today-completion", getTodayCompletion);
 
 module.exports = router;

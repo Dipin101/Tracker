@@ -1,6 +1,6 @@
 const Habits = require("../../models/Habits");
 
-const getMonths = async (req, res) => {
+const postMonths = async (req, res) => {
   try {
     const { userId, year, month, trackSleepModal, sleepTrackingStart } =
       req.body;
@@ -18,7 +18,8 @@ const getMonths = async (req, res) => {
 
     // Check if month already exists
     const monthExists = userHabits.months.some(
-      (m) => m.year === year && m.month === month,
+      (m) =>
+        Number(m.year) === Number(year) && String(m.month) === String(month),
     );
 
     if (monthExists) {
@@ -33,7 +34,7 @@ const getMonths = async (req, res) => {
       habits: [],
       sleep: [],
       trackSleep: trackSleepModal,
-      sleepTrackingStart: tracksleepModal ? sleepTrackingStart : null, //starting date
+      sleepTrackingStart: trackSleepModal ? sleepTrackingStart : null, //starting date
     });
 
     //  Save document
@@ -50,4 +51,4 @@ const getMonths = async (req, res) => {
   }
 };
 
-module.exports = getMonths;
+module.exports = postMonths;

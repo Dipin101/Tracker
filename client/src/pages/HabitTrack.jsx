@@ -5,6 +5,7 @@ import MemorableDay from "../components/MemorableDay";
 import SleepCycle from "../components/SleepCycle";
 import HabitsToTrack from "../components/HabitsToTrack";
 import { auth } from "../firebase";
+import { DateTime } from "luxon";
 
 const HabitTrack = () => {
   const [activeTab, setActiveTab] = useState(() => {
@@ -17,12 +18,13 @@ const HabitTrack = () => {
   //for modal
   const [isOpen, setIsOpen] = useState(false);
 
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = String(now.getMonth() + 1).padStart(2, "0");
-  const estNowStr = new Date().toLocaleString("en-US", {
-    timeZone: "America/Toronto",
-  });
+  const nowToronto = DateTime.now().setZone("America/Toronto");
+  const currentYear = nowToronto.year;
+  const currentMonth = String(nowToronto.month).padStart(2, "0");
+
+  const sleepTrackingStart = trackSleepModal
+    ? DateTime.now().setZone("America/Toronto").toJSDate()
+    : null;
 
   // //simulating to see next month
   // const now = new Date();
@@ -77,7 +79,7 @@ const HabitTrack = () => {
           year: currentYear,
           month: currentMonth,
           trackSleepModal: trackSleepModal,
-          sleepTrackingStart: new Date(estNowStr),
+          sleepTrackingStart,
         }),
       });
 
@@ -102,6 +104,7 @@ const HabitTrack = () => {
       console.log("Error");
     }
   };
+  // console.log(currentMonthData.sleepTrackingStart);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -113,7 +116,8 @@ const HabitTrack = () => {
         return (
           <SleepCycle
             startDate={
-              currentMonthData?.sleepTrackingStart || new Date(estNowStr)
+              currentMonthData?.sleepTrackingStart ||
+              DateTime.now().setZone("America/Toronto").toJSDate()
             }
           />
         );
@@ -136,10 +140,10 @@ const HabitTrack = () => {
       {currentMonthData ? (
         <p className="text-gray-800 mb-4">
           Tracking for{" "}
-          {new Date(
-            currentMonthData.year,
-            currentMonthData.month - 1,
-          ).toLocaleString("default", { month: "long", year: "numeric" })}
+          {DateTime.fromObject(
+            { year: currentMonthData.year, month: currentMonthData.month },
+            { zone: "America/Toronto" },
+          ).toFormat("LLLL yyyy")}
         </p>
       ) : (
         <p className="text-gray-600 mb-4">
@@ -217,7 +221,7 @@ const HabitTrack = () => {
                 Month:
                 <input
                   type="text"
-                  value={`${now.toLocaleString("default", { month: "long" })} ${currentYear}`}
+                  value={`${nowToronto.toFormat("LLLL yyyy")}`}
                   className="border rounded px-2 py-1 w-full bg-gray-100"
                   readOnly
                 />
