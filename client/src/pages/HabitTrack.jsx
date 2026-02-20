@@ -6,7 +6,6 @@ import SleepCycle from "../components/SleepCycle";
 import HabitsToTrack from "../components/HabitsToTrack";
 import { auth } from "../firebase";
 import { DateTime } from "luxon";
-import { onAuthStateChanged } from "firebase/auth";
 
 const HabitTrack = () => {
   const [user, setUser] = useState(null);
@@ -49,7 +48,7 @@ const HabitTrack = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (!currentUser) {
         setLoading(false);
         return;

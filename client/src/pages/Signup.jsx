@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import firebase from "firebase/compat/app";
 import { auth } from "../firebase";
-import {
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
+// import {
+//   createUserWithEmailAndPassword,
+//   GoogleAuthProvider,
+//   signInWithPopup,
+// } from "firebase/auth";
 import Navbar from "../components/Navbar";
 
 const Signup = () => {
@@ -25,8 +26,7 @@ const Signup = () => {
 
   const onSubmit = async (data) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
+      const userCredential = await auth.createUserWithEmailAndPassword(
         data.email,
         data.password,
       );
@@ -59,8 +59,8 @@ const Signup = () => {
   };
 
   const googleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await auth.signInWithPopup(provider);
     const user = result.user;
     const idToken = await user.getIdToken();
 

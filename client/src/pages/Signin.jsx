@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import Navbar from "../components/Navbar.jsx";
 
@@ -19,8 +18,7 @@ const Signin = () => {
   } = useForm();
   const onSubmit = async (data) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
+      const userCredential = await auth.signInWithEmailAndPassword(
         data.email,
         data.password,
       );

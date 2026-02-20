@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { auth } from "../../firebase";
-import { onAuthStateChanged } from "firebase/auth";
 import QuoteCard from "../../components/QuoteCard";
 import StreakCard from "../../components/StreakCard";
 import CompletionCard from "../../components/CompletionCard";
@@ -11,7 +10,7 @@ const Dashboard = () => {
   const [sleepAvg, setSleepAvg] = useState(6.8); // dummy hours
   const [streak, setStreak] = useState(12); // dummy days
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = auth.onAuthStateChanged(auth, async (user) => {
       if (!user) return;
 
       const idToken = await user.getIdToken();

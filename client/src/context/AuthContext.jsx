@@ -1,7 +1,6 @@
 // src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../firebase"; // Adjust path to firebaseConfig
+import { auth } from "../firebase"; // import from compat firebase.js
 
 const AuthContext = createContext();
 
@@ -10,18 +9,19 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    // Use compat method for auth state change
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
 
-    return unsubscribe;
+    return unsubscribe; // cleanup on unmount
   }, []);
 
   const logout = async () => {
-    await signOut(auth);
+    await auth.signOut(); // compat signOut method
     setUser(null);
-    console.log("Logged out, session cleared"); //--> session should be cleared
+    console.log("Logged out, session cleared");
   };
 
   return (

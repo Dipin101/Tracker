@@ -1,5 +1,4 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
@@ -14,7 +13,7 @@ const Navbar = () => {
   const isDashboard = location.pathname.startsWith("/dashboard");
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
+    const unsub = auth.onAuthStateChanged((currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
@@ -22,13 +21,13 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await auth.signOut(auth);
     setUser(null);
     navigate("/signin");
   };
 
+  // DASHBOARD SIDEBAR
   if (isDashboard && user) {
-    // DASHBOARD SIDEBAR
     return (
       <div className="fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white flex flex-col p-4">
         <NavLink to="/dashboard" className="mb-4 p-2 rounded hover:bg-gray-700">
@@ -80,7 +79,7 @@ const Navbar = () => {
     );
   }
 
-  // TOP NAVBAR FOR PUBLIC PAGES
+  // TOP NAVBAR FOR PUBLIC PAGES & LOGGED-IN USERS
   return (
     <nav className="bg-gray-800 text-white px-4 py-3 flex items-center justify-between relative">
       <NavLink to="/" className="text-xl font-bold uppercase">
@@ -89,35 +88,31 @@ const Navbar = () => {
 
       {/* Desktop links */}
       <div className="hidden md:flex items-center gap-x-6 text-lg">
-        <NavLink
-          to="#products"
-          onClick={(e) => {
-            e.preventDefault(); // prevent router navigation
-            const section = document.querySelector("#products");
-            if (section) section.scrollIntoView({ behavior: "smooth" });
-          }}
-        >
-          Products
-        </NavLink>
-        <NavLink
-          to="#about"
-          onClick={(e) => {
-            e.preventDefault();
-            const section = document.querySelector("#about");
-            if (section) section.scrollIntoView({ behavior: "smooth" });
-          }}
-        >
-          About
-        </NavLink>
+        <NavLink to="/products">Products</NavLink>
+        <NavLink to="/about">About</NavLink>
 
-        <>
-          <NavLink to="/signup" className="bg-green-500 px-3 py-1 rounded">
-            Sign Up
-          </NavLink>
-          <NavLink to="/signin" className="bg-green-500 px-3 py-1 rounded">
-            Sign In
-          </NavLink>
-        </>
+        {user ? (
+          <>
+            <NavLink to="/dashboard" className="bg-green-500 px-3 py-1 rounded">
+              Dashboard
+            </NavLink>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 px-3 py-1 rounded"
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <NavLink to="/signup" className="bg-green-500 px-3 py-1 rounded">
+              Sign Up
+            </NavLink>
+            <NavLink to="/signin" className="bg-green-500 px-3 py-1 rounded">
+              Sign In
+            </NavLink>
+          </>
+        )}
       </div>
 
       {/* Mobile hamburger button */}
@@ -128,16 +123,47 @@ const Navbar = () => {
       {/* Mobile menu */}
       {open && (
         <div className="absolute top-full left-0 w-full bg-gray-800 flex flex-col items-start p-4 gap-2 md:hidden z-10">
-          <NavLink onClick={() => setOpen(false)} to="/products">
+          <NavLink
+            to="#products"
+            onClick={(e) => {
+              e.preventDefault(); // prevent router navigation
+              const section = document.querySelector("#products");
+              if (section) section.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
             Products
           </NavLink>
-          <NavLink onClick={() => setOpen(false)} to="/contact">
-            Contact
-          </NavLink>
-          <NavLink onClick={() => setOpen(false)} to="/about">
+          <NavLink
+            to="#about"
+            onClick={(e) => {
+              e.preventDefault();
+              const section = document.querySelector("#about");
+              if (section) section.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
             About
           </NavLink>
-          {!user && (
+
+          {user ? (
+            <>
+              <NavLink
+                onClick={() => setOpen(false)}
+                to="/dashboard"
+                className="bg-green-500 px-3 py-1 rounded"
+              >
+                Dashboard
+              </NavLink>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setOpen(false);
+                }}
+                className="bg-red-500 px-3 py-1 rounded"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
             <>
               <NavLink
                 onClick={() => setOpen(false)}
