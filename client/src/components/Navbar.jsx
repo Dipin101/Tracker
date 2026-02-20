@@ -89,9 +89,26 @@ const Navbar = () => {
 
       {/* Desktop links */}
       <div className="hidden md:flex items-center gap-x-6 text-lg">
-        <NavLink to="/products">Products</NavLink>
-        <NavLink to="/contact">Contact</NavLink>
-        <NavLink to="/about">About</NavLink>
+        <NavLink
+          to="#products"
+          onClick={(e) => {
+            e.preventDefault(); // prevent router navigation
+            const section = document.querySelector("#products");
+            if (section) section.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          Products
+        </NavLink>
+        <NavLink
+          to="#about"
+          onClick={(e) => {
+            e.preventDefault();
+            const section = document.querySelector("#about");
+            if (section) section.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          About
+        </NavLink>
 
         <>
           <NavLink to="/signup" className="bg-green-500 px-3 py-1 rounded">

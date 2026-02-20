@@ -82,9 +82,21 @@ const Signup = () => {
     <div className="h-screen flex flex-col">
       <Navbar />
       <div className="flex flex-1 md:flex-row">
-        {/* left panel */}
-        <div className="hidden md:w-1/2 md:flex items-center justify-center bg-gray-100 p-4">
-          <div className="text-4xl md:text-5xl font-bold">Logo / Animation</div>
+        {/* Left Side - Logo & Animation */}
+        <div className="hidden md:w-1/2 md:flex items-center justify-center bg-gradient-to-br from-[#2c2d5a] to-[#1e1f3f] p-4 relative overflow-hidden">
+          {/* Floating animated circles for subtle background motion */}
+          <div className="absolute w-40 h-40 bg-green-500 rounded-full opacity-20 animate-ping -top-10 -left-10"></div>
+          <div className="absolute w-32 h-32 bg-green-400 rounded-full opacity-20 animate-pulse top-20 right-10"></div>
+          <div className="absolute w-24 h-24 bg-green-600 rounded-full opacity-30 animate-bounce bottom-10 left-16"></div>
+
+          {/* Logo & text in center */}
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <h1 className="text-9xl text-white font-extrabold">OA</h1>
+            <h2 className="text-3xl font-bold text-green-400">OneApp</h2>
+            <p className="text-gray-200 mt-2 max-w-xs">
+              Track your habits, expenses, and job applications easily.
+            </p>
+          </div>
         </div>
         {/* right panel */}
         <div className="md:w-1/2 flex items-center justify-center p-6">
