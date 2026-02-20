@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { auth } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import Navbar from "../components/Navbar";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
