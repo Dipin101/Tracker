@@ -20,6 +20,7 @@ const HabitTrack = () => {
   const [trackSleepModal, setTrackSleepModal] = useState(false);
   //for modal
   const [isOpen, setIsOpen] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const nowToronto = DateTime.now().setZone("America/Toronto");
   const currentYear = nowToronto.year;
@@ -59,7 +60,7 @@ const HabitTrack = () => {
 
       try {
         const res = await fetch(
-          `http://localhost:3000/api/users/months/${currentUser.uid}/${currentYear}/${currentMonth}`,
+          `${API_URL}/api/users/months/${currentUser.uid}/${currentYear}/${currentMonth}`,
         );
 
         if (!res.ok) {
@@ -86,10 +87,9 @@ const HabitTrack = () => {
     const user = auth.currentUser;
     if (!user) return console.log("No user logged in");
     // console.log(user.uid, currentYear, currentMonth, trackSleepModal);
-    const backendUrl = "http://localhost:3000/api/users/months";
 
     try {
-      const res = await fetch(backendUrl, {
+      const res = await fetch(`${API_URL}/api/users/months`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

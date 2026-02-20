@@ -18,6 +18,7 @@ const MemorableDay = ({ onAdd }) => {
   const day = String(nowToronto.day).padStart(2, "0");
   const month = String(nowToronto.month).padStart(2, "0");
   const year = nowToronto.year;
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // Fetch today's summary
   useEffect(() => {
@@ -30,7 +31,7 @@ const MemorableDay = ({ onAdd }) => {
 
       try {
         const res = await fetch(
-          `http://localhost:3000/api/users/memorable/${user.uid}/${year}/${month}/${day}`,
+          `${API_URL}/api/users/memorable/${user.uid}/${year}/${month}/${day}`,
         );
         if (!res.ok) {
           // setLoading(false);
@@ -61,7 +62,7 @@ const MemorableDay = ({ onAdd }) => {
     if (!user) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/memorable", {
+      const res = await fetch(`${API_URL}/api/users/memorable`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

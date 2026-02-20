@@ -13,6 +13,7 @@ const StreakCard = () => {
     "Let's go!",
     "Stay consistent!",
   ];
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchStreak = async () => {
@@ -24,7 +25,7 @@ const StreakCard = () => {
       const today = DateTime.now().setZone("America/Toronto").toISODate();
 
       try {
-        const res = await fetch("http://localhost:3000/api/users/streak", {
+        const res = await fetch(`${API_URL}/api/users/streak`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

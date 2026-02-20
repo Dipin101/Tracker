@@ -21,6 +21,9 @@ const HabitsToTrack = () => {
   const inputRefs = useRef([]);
   const commentRefs = useRef(null);
 
+  //url
+  const API_URL = import.meta.env.VITE_API_URL;
+
   // Date
   // const today = new Date().toISOString().split("T")[0]; //--> Standard gmt time
   //simulated
@@ -258,7 +261,7 @@ const HabitsToTrack = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/habits", {
+      const res = await fetch(`${API_URL}/api/users/habits`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -288,7 +291,7 @@ const HabitsToTrack = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/api/users/habits/${user.uid}?month=${currentMonth}&year=${currentYear}`,
+        `${API_URL}/api/users/habits/${user.uid}?month=${currentMonth}&year=${currentYear}`,
       );
       const data = await res.json();
 

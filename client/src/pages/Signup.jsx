@@ -11,8 +11,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   //api
-  const API_URL = `http://localhost:3000`;
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const {
     register,
@@ -61,7 +60,7 @@ const Signup = () => {
     const user = result.user;
     const idToken = await user.getIdToken();
 
-    const res = await fetch("http://localhost:3000/api/users/googleauth", {
+    const res = await fetch(`${API_URL}/api/users/googleauth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

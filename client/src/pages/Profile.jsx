@@ -4,13 +4,14 @@ import { auth } from "../firebase";
 
 const Profile = () => {
   const [userData, setUserData] = useState({});
+  const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     const fetchProfile = async () => {
       const user = auth.currentUser;
       if (!user) return;
       const idToken = await user.getIdToken();
       // console.log("token", idToken);
-      const res = await fetch("http://localhost:3000/api/users/getProfile", {
+      const res = await fetch(`${API_URL}/api/users/getProfile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

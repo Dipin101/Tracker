@@ -5,10 +5,10 @@ import { DateTime } from "luxon";
 const QuoteCard = () => {
   const [quote, setQuote] = useState("");
   const [author, setAuthor] = useState("");
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const fetchQuote = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/users/quote");
+      const res = await fetch(`${API_URL}/api/users/quote`);
       const data = await res.json();
 
       let userId = localStorage.getItem("userId");

@@ -55,6 +55,7 @@ const SleepCycle = ({ startDate }) => {
   //   null, // 27th → future → blocked
   //   null, // 28th → future → blocked
   // ]);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchSleepData = async () => {
@@ -66,7 +67,7 @@ const SleepCycle = ({ startDate }) => {
       try {
         // Assuming your backend route returns all sleep data for the month
         const res = await fetch(
-          `http://localhost:3000/api/users/sleep/${user.uid}/${year}/${month + 1}`,
+          `${API_URL}/api/users/sleep/${user.uid}/${year}/${month + 1}`,
         );
         if (!res.ok) return;
 
@@ -94,7 +95,7 @@ const SleepCycle = ({ startDate }) => {
       const user = auth.currentUser;
       if (!user) return;
       const sleepMinutes = Math.round(hours * 60);
-      const BACKEND_URL = "http://localhost:3000/api/users/sleep";
+      const BACKEND_URL = `${API_URL}/api/users/sleep`;
       const response = await fetch(BACKEND_URL, {
         method: "POST",
         headers: {

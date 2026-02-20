@@ -8,15 +8,17 @@ import SleepCompletion from "../../components/SleepCompletion";
 
 const Dashboard = () => {
   const [userName, setUserName] = useState(null);
-  const [sleepAvg, setSleepAvg] = useState(6.8); // dummy hours
-  const [streak, setStreak] = useState(12); // dummy days
+  // const [sleepAvg, setSleepAvg] = useState(6.8); // dummy hours
+  // const [streak, setStreak] = useState(12); // dummy days
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) return;
 
       const idToken = await user.getIdToken();
 
-      const res = await fetch("http://localhost:3000/api/users/getUser", {
+      const res = await fetch(`${API_URL}/api/users/getUser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
