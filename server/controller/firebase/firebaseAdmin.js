@@ -3,6 +3,12 @@ const admin = require("firebase-admin");
 
 const serviceAccountPath = JSON.parse(process.env.FIRE_BASE_CREDENTIAL);
 
+// Fix newlines
+serviceAccountPath.private_key = serviceAccountPath.private_key.replace(
+  /\\n/g,
+  "\n",
+);
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccountPath),
 });
