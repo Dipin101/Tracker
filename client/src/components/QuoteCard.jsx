@@ -10,15 +10,26 @@ const QuoteCard = () => {
     try {
       const res = await fetch("http://localhost:3000/api/users/quote");
       const data = await res.json();
-      const q = data[0].q;
-      const a = data[0].a;
+
+      let userId = localStorage.getItem("userId");
+      if (!userId) {
+        userId = Math.random().toString(36).substr(2, 9);
+        localStorage.setItem("userId", userId);
+      }
+
+      const seed = userId
+        .split("")
+        .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const dailyIndex = (seed + new Date(today).getDate()) % data.length;
+
+      const { q, a } = data[dailyIndex];
       const today = DateTime.now().setZone("America/Toronto").toISODate();
       localStorage.setItem(
         "quoteOfTheDay",
         JSON.stringify({ q, a, date: today }),
       );
-      setQuote(data[0].q);
-      setAuthor(data[0].a);
+      setQuote(q);
+      setAuthor(a);
     } catch (err) {
       console.error("Failed to fetch", err);
       setQuote("Stay consistent and never give up!");

@@ -48,6 +48,7 @@ const CompletionCard = () => {
     <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center h-40">
       <h3 className="text-sm text-gray-500 mb-4">Today's Completion</h3>
       <p className="text-3xl font-bold text-gray-800">{completion}%</p>
+      <h3 className="text-sm text-gray-500 mb-4">Completion:{completion}%</h3>
     </div>
   );
 };
