@@ -4,10 +4,10 @@ import { onAuthStateChanged } from "firebase/auth";
 import QuoteCard from "../../components/QuoteCard";
 import StreakCard from "../../components/StreakCard";
 import CompletionCard from "../../components/CompletionCard";
+import SleepCompletion from "../../components/SleepCompletion";
 
 const Dashboard = () => {
   const [userName, setUserName] = useState(null);
-  const [completionRate, setCompletionRate] = useState(72); // dummy %
   const [sleepAvg, setSleepAvg] = useState(6.8); // dummy hours
   const [streak, setStreak] = useState(12); // dummy days
   useEffect(() => {
@@ -55,14 +55,8 @@ const Dashboard = () => {
           {/* Completion Component */}
           <CompletionCard />
 
-          <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center">
-            <h3 className="text-sm text-gray-500">Avg Sleep (Month)</h3>
-            <p className="text-3xl font-bold text-gray-800 mt-2">
-              {sleepAvg} hrs
-            </p>
-            <p className="text-sm text-gray-400 mt-1">Aim for 7–8 hrs</p>
-          </div>
-
+          {/* Sleep completion */}
+          <SleepCompletion />
           <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center">
             <h3 className="text-sm text-gray-500">Monthly Overview</h3>
             <p className="text-xl font-semibold text-gray-800 mt-2">

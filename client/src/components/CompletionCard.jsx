@@ -35,7 +35,7 @@ const CompletionCard = () => {
 
         const data = await res.json();
         setHabits(data.habits || []);
-        console.log(data);
+        // console.log(data);
       } catch (err) {
         console.error("Error fetching today's habits:", err);
       }
@@ -45,21 +45,9 @@ const CompletionCard = () => {
   }, []); // <-- empty dependency array, only runs on mount
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6">
+    <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center h-40">
       <h3 className="text-sm text-gray-500 mb-4">Today's Completion</h3>
       <p className="text-3xl font-bold text-gray-800">{completion}%</p>
-
-      <div className="mt-4 space-y-2">
-        {habits.map((h) => (
-          <div
-            key={h._id}
-            className="flex justify-between items-center p-2 border rounded"
-          >
-            <span>{h.name}</span>
-            <span>{h.status === "completed" ? "✅" : "⬜"}</span>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };

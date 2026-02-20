@@ -15,6 +15,7 @@ const getSleep = require("../controller/habitsController/getSleep");
 const getQuote = require("../controller/habitsController/getQuote");
 const postStreak = require("../controller/dashboardController/postStreak");
 const getTodayCompletion = require("../controller/dashboardController/getTodayCompletion");
+const getAvgSleep = require("../controller/dashboardController/getAvgSleep");
 
 const router = express.Router();
 
@@ -43,5 +44,6 @@ router.get("/quote", getQuote);
 router.post("/streak", postStreak);
 //calculating completion
 router.post("/today-completion", getTodayCompletion);
+router.get("/avgsleep/:userId/:year/:month", getAvgSleep);
 
 module.exports = router;

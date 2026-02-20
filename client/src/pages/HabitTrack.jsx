@@ -6,8 +6,11 @@ import SleepCycle from "../components/SleepCycle";
 import HabitsToTrack from "../components/HabitsToTrack";
 import { auth } from "../firebase";
 import { DateTime } from "luxon";
+import { onAuthStateChanged } from "firebase/auth";
 
 const HabitTrack = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(() => {
     // read last active tab from localStorage
     const savedTab = localStorage.getItem("activeTab");
@@ -34,33 +37,48 @@ const HabitTrack = () => {
 
   const isOpenModal = () => setIsOpen(true);
 
+  useEffect(() => {
+    if (!currentMonthData?.trackSleep && activeTab === "sleep") {
+      setActiveTab("memorable");
+    }
+  }, [currentMonthData, activeTab]);
+
   //for state to be active
   useEffect(() => {
     localStorage.setItem("activeTab", activeTab);
   }, [activeTab]);
 
   useEffect(() => {
-    const fetchMonth = async () => {
-      const user = auth.currentUser;
-      if (!user) return;
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (!currentUser) {
+        setLoading(false);
+        return;
+      }
+
+      setUser(currentUser);
 
       try {
         const res = await fetch(
-          `http://localhost:3000/api/users/months/${user.uid}/${currentYear}/${currentMonth}`,
+          `http://localhost:3000/api/users/months/${currentUser.uid}/${currentYear}/${currentMonth}`,
         );
 
         if (!res.ok) {
           setCurrentMonthData(null);
+          setLoading(false);
           return;
         }
+
         const data = await res.json();
         setCurrentMonthData(data.month);
       } catch (err) {
-        console.log("Error fetching month: ", err);
+        console.log("Error fetching month:", err);
         setCurrentMonthData(null);
       }
-    };
-    fetchMonth();
+
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleAdd = async (e) => {
@@ -99,6 +117,11 @@ const HabitTrack = () => {
       // Update frontend state so tabs show immediately
       setCurrentMonthData(data.month);
 
+      if (!data.month.trackSleep) {
+        setActiveTab("memorable");
+        localStorage.setItem("activeTab", "memorable");
+      }
+
       setIsOpen(false);
     } catch (err) {
       console.log("Error");
@@ -113,28 +136,29 @@ const HabitTrack = () => {
       case "habits":
         return <HabitsToTrack />;
       case "sleep":
-        return (
-          <SleepCycle
-            startDate={
-              currentMonthData?.sleepTrackingStart ||
-              DateTime.now().setZone("America/Toronto").toJSDate()
-            }
-          />
-        );
+        if (!currentMonthData?.trackSleep) return null;
+
+        return <SleepCycle startDate={currentMonthData.sleepTrackingStart} />;
       default:
         return null;
     }
   };
-
+  if (loading) {
+    return (
+      <div className="h-[calc(100vh-8rem)] p-4 bg-amber-500 rounded-2xl flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
   return (
     <div className="h-[calc(100vh-8rem)] p-4 bg-amber-500 rounded-2xl overflow-auto">
       <h1 className="text-5xl mb-4 font-bold">Welcome to Habit Tracker</h1>
 
       {/* // loading ? (
-        //   <div className="flex items-center justify-center h-full">
-        //     Loading...
-        //   </div>
-        // ) : */}
+      //   <div className="flex items-center justify-center h-full">
+      //     Loading...
+      //   </div>
+      // ) : */}
 
       {/*small header */}
       {currentMonthData ? (
