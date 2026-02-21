@@ -1,26 +1,22 @@
-require("dotenv").config({ path: __dirname + "/../../config/.env" }); // load .env
+require("dotenv").config({ path: __dirname + "/../../config/.env" });
 const admin = require("firebase-admin");
 
-const serviceAccountPath = process.env.FIRE_BASE_CREDENTIAL;
+let serviceAccount;
 
-if (!serviceAccountPath) {
-  throw new Error("FIRE_BASE_CREDENTIAL is not defined! Check your .env file.");
+if (process.env.NODE_ENV === "production") {
+  // Production: use env variables
+  serviceAccount = {
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+  };
+} else {
+  // Local: use JSON file
+  serviceAccount = require(process.env.FIRE_BASE_CREDENTIAL);
 }
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccountPath),
+  credential: admin.credential.cert(serviceAccount),
 });
 
 module.exports = admin;
-
-// const serviceAccountPath = JSON.parse(process.env.FIRE_BASE_CREDENTIAL);
-
-// // Fix newlines
-// serviceAccountPath.private_key = serviceAccountPath.private_key.replace(
-//   /\\n/g,
-//   "\n",
-// );
-
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccountPath),
-// });
