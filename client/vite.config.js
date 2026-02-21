@@ -6,6 +6,6 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   optimizeDeps: {
-    include: ["firebase/app", "firebase/auth"],
+    include: ["firebase/app", "firebase/auth", "react-icons/ai"],
   },
 });
