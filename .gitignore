@@ -25,3 +25,5 @@ dist-ssr
 
 client/.env
 server/config/.env
+
+mongodb+srv://khatridipin10_db_user:DIjfJFL1qwSKg87N@habit-tracker-cluster.8sxvvst.mongodb.net/?appName=habit-tracker-cluster
