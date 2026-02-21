@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { auth } from "../firebase"; // adjust path
 import { DateTime } from "luxon";
+import { fetchFromBackend } from "../api";
 
 const StreakCard = () => {
   const [streak, setStreak] = useState(0);
-  const [userName, setUserName] = useState("User");
   const [message, setMessage] = useState("");
   const streakMessages = [
     "Keep going!",
@@ -13,19 +13,16 @@ const StreakCard = () => {
     "Let's go!",
     "Stay consistent!",
   ];
-  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchStreak = async () => {
       const user = auth.currentUser;
       if (!user) return;
 
-      setUserName(user.displayName || "User"); // optional
-
       const today = DateTime.now().setZone("America/Toronto").toISODate();
 
       try {
-        const res = await fetch(`${API_URL}/api/users/streak`, {
+        const data = await fetchFromBackend("/api/users/streak", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -33,12 +30,6 @@ const StreakCard = () => {
           body: JSON.stringify({ userId: user.uid, today }),
         });
 
-        if (!res.ok) {
-          console.error("Failed to fetch streak");
-          return;
-        }
-
-        const data = await res.json();
         setStreak(data.streak);
         const msgIdx = Math.min(data.streak, streakMessages.length - 1);
         setMessage(streakMessages[msgIdx]);

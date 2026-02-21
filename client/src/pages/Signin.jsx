@@ -5,12 +5,11 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import Navbar from "../components/Navbar.jsx";
+import { fetchFromBackend } from "../api.js";
 
 const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  //api
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const {
     register,
@@ -26,19 +25,13 @@ const Signin = () => {
       );
       const uid = userCredential.user.uid;
 
-      const res = await fetch(`${API_URL}/api/users/signin`, {
+      const res = await fetchFromBackend("/api/users/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ firebaseUid: uid }),
       });
-      const result = await res.json();
-      if (res.ok) {
-        // console.log("Login successful:", result.message);
-        navigate("/dashboard");
-      } else {
-        console.log(result.error || "Login failed");
-        alert(result.error || "Login failed");
-      }
+      console.log("Login successful: ", res.message || res);
+      navigate("/dashboard");
     } catch (error) {
       console.log(error);
       alert("Something went wrong");

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase";
+import { fetchFromBackend } from "../api";
 
 const CompletionCard = () => {
   const [habits, setHabits] = useState([]);
   const [completion, setCompletion] = useState(0);
-  const API_URL = import.meta.env.VITE_API_URL;
 
   // Recalculate completion whenever habits change
   useEffect(() => {
@@ -24,15 +24,13 @@ const CompletionCard = () => {
       if (!user) return;
 
       try {
-        const res = await fetch(`${API_URL}/api/users/today-completion`, {
+        const res = await fetchFromBackend("/api/users/today-completion", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId: user.uid }),
         });
-        if (!res.ok) return;
 
-        const data = await res.json();
-        setHabits(data.habits || []);
+        setHabits(res.habits || []);
         // console.log(data);
       } catch (err) {
         console.error("Error fetching today's habits:", err);

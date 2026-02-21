@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { DateTime } from "luxon";
+import { fetchFromBackend } from "../api";
 
 const MonthlySleepCompletion = () => {
   const [completionPercent, setCompletionPercent] = useState(0);
   const [averageHours, setAverageHours] = useState(0);
-  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchSleepData = async () => {
@@ -20,12 +20,9 @@ const MonthlySleepCompletion = () => {
 
       try {
         // /avgsleep/:userId/:year/:month
-        const res = await fetch(
-          `${API_URL}/api/users/avgsleep/${user.uid}/${currentYear}/${currentMonth}`,
+        const data = await fetchFromBackend(
+          `/api/users/avgsleep/${user.uid}/${currentYear}/${currentMonth}`,
         );
-        if (!res.ok) return;
-
-        const data = await res.json();
         const monthData = data.month;
 
         if (!monthData?.sleep || monthData.sleep.length === 0) {

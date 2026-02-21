@@ -6,12 +6,11 @@ import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Navbar from "../components/Navbar";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { fetchFromBackend } from "../api";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
 
-  //api
-  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const {
     register,
@@ -29,7 +28,7 @@ const Signup = () => {
 
       const uid = userCredential.user.uid;
 
-      const res = await fetch(`${API_URL}/api/users/register`, {
+      const res = await fetchFromBackend("/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -41,39 +40,33 @@ const Signup = () => {
         }),
       });
 
-      const result = await res.json();
-      // console.log(result);
-      if (res.ok) {
-        // console.log("register in manual", result);
-        navigate("/signin");
-      } else {
-        console.log("Server Error", result.error || "Registration failed");
-      }
+      console.log("Registration successful:", res.message || res);
+      navigate("/signin");
     } catch (errors) {
       console.log("Server Error: ", errors);
     }
   };
 
   const googleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    const idToken = await user.getIdToken();
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const idToken = await user.getIdToken();
 
-    const res = await fetch(`${API_URL}/api/users/googleauth`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ idToken }),
-    });
-    const data = await res.json();
+      const res = await fetchFromBackend("/api/users/googleauth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken }),
+      });
 
-    if (res.ok) {
-      // console.log("Google Signin working", data);
+      console.log("Google Signin working", res);
       navigate("/dashboard");
-    } else {
-      console.log(data.error);
+    } catch (error) {
+      console.error("Google login failed:", error.message || error);
+      alert(error.message || "Google login failed");
     }
   };
 

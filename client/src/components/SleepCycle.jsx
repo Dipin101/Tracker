@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { DateTime } from "luxon";
+import { fetchFromBackend } from "../api";
 
 ChartJS.register(
   LineElement,
@@ -21,26 +22,27 @@ ChartJS.register(
 
 const SleepCycle = ({ startDate }) => {
   const chartRef = useRef();
-
+  const debounceSave = useRef(null);
   //Dummy data
   // const start = 1;
   // const totalDays = 31; // full month
 
-  //Actual data
-  const start = new Date(startDate);
-  const year = start.getFullYear();
-  const month = start.getMonth();
-  const totalDays = new Date(year, month + 1, 0).getDate();
+  //Actual date parsed with luxon
+  const start = DateTime.fromISO(startDate, { zone: "America/Toronto" });
+  const year = start.year;
+  const month = start.month; // 1-12
+  const totalDays = start.endOf("month").day;
 
   // Labels = days of month from startDate
   const labels = useMemo(() => {
     const arr = [];
-    for (let d = start.getDate(); d <= totalDays; d++) arr.push(d);
+    for (let d = start.day; d <= totalDays; d++) arr.push(d);
     return arr;
-  }, [startDate]);
+  }, [startDate, start.day, totalDays]);
 
   // Initialize sleep data as null so empty points
   const [sleepData, setSleepData] = useState(Array(labels.length).fill(null));
+  const [errorMessage, setErrorMessage] = useState("");
   //dummy data to check
   // const [sleepData, setSleepData] = useState([
   //   6, // 18th → already added → cannot edit
@@ -55,8 +57,8 @@ const SleepCycle = ({ startDate }) => {
   //   null, // 27th → future → blocked
   //   null, // 28th → future → blocked
   // ]);
-  const API_URL = import.meta.env.VITE_API_URL;
 
+  //fetch from backend
   useEffect(() => {
     const fetchSleepData = async () => {
       const user = auth.currentUser;
@@ -66,13 +68,9 @@ const SleepCycle = ({ startDate }) => {
 
       try {
         // Assuming your backend route returns all sleep data for the month
-        const res = await fetch(
-          `${API_URL}/api/users/sleep/${user.uid}/${year}/${month + 1}`,
+        const data = await fetchFromBackend(
+          `/api/users/sleep/${user.uid}/${year}/${month}`,
         );
-        if (!res.ok) return;
-
-        const data = await res.json(); // should return this bakchodi: [{ day: 18, hour: 360 }]
-        //lets see
         // Convert minutes to hours
         console.log(data);
         const newSleepData = labels.map((day) => {
@@ -84,19 +82,20 @@ const SleepCycle = ({ startDate }) => {
         setSleepData(newSleepData);
       } catch (err) {
         console.error("Error fetching sleep data:", err);
+        setSleepData(Array(labels.length).fill(null));
       }
     };
 
     fetchSleepData();
-  }, [labels]);
+  }, [labels, year, month]);
 
+  //post sleep to backend
   const postSleep = async (day, hours) => {
     try {
       const user = auth.currentUser;
       if (!user) return;
       const sleepMinutes = Math.round(hours * 60);
-      const BACKEND_URL = `${API_URL}/api/users/sleep`;
-      const response = await fetch(BACKEND_URL, {
+      const data = await fetchFromBackend("/api/users/sleep", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -104,15 +103,16 @@ const SleepCycle = ({ startDate }) => {
         body: JSON.stringify({
           userId: user.uid,
           year: start.getFullYear(),
-          month: String(start.getMonth() + 1).padStart(2, "0"),
+          month: String(month).padStart(2, "0"),
           day: String(day).padStart(2, "0"),
           hour: sleepMinutes,
         }),
       });
-      const data = await response.json();
       console.log("Saved from frontend", data);
     } catch (err) {
       console.error("Error saving sleep:", err);
+      setErrorMessage("Failed to save sleep. Try again.");
+      setTimeout(() => setErrorMessage(""), 3000);
     }
   };
 
@@ -238,7 +238,10 @@ const SleepCycle = ({ startDate }) => {
     const newData = [...sleepData];
     newData[dayIndex] = hours; // round 1 decimal
     setSleepData(newData);
-    postSleep(clickedDay, hours);
+
+    // Debounced save to reduce API calls
+    if (debounceSave.current) clearTimeout(debounceSave.current);
+    debounceSave.current = setTimeout(() => postSleep(clickedDay, hours), 500);
   };
 
   return (

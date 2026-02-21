@@ -1,15 +1,14 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
+import { fetchFromBackend } from "../api";
 
 const QuoteCard = () => {
   const [quote, setQuote] = useState("");
   const [author, setAuthor] = useState("");
-  const API_URL = import.meta.env.VITE_API_URL;
   const fetchQuote = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/users/quote`);
-      const data = await res.json();
+      const data = await fetchFromBackend("/api/users/quote");
 
       let userId = localStorage.getItem("userId");
       if (!userId) {
@@ -20,10 +19,10 @@ const QuoteCard = () => {
       const seed = userId
         .split("")
         .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const today = DateTime.now().setZone("America/Toronto").toISODate();
       const dailyIndex = (seed + new Date(today).getDate()) % data.length;
 
       const { q, a } = data[dailyIndex];
-      const today = DateTime.now().setZone("America/Toronto").toISODate();
       localStorage.setItem(
         "quoteOfTheDay",
         JSON.stringify({ q, a, date: today }),

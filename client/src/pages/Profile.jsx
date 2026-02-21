@@ -1,26 +1,25 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { auth } from "../firebase";
+import { fetchFromBackend } from "../api";
 
 const Profile = () => {
   const [userData, setUserData] = useState({});
-  const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     const fetchProfile = async () => {
       const user = auth.currentUser;
       if (!user) return;
       const idToken = await user.getIdToken();
       // console.log("token", idToken);
-      const res = await fetch(`${API_URL}/api/users/getProfile`, {
+      const res = await fetchFromBackend("/api/users/getProfile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${idToken}`,
         },
       });
-      const data = await res.json();
       // console.log(data);
-      setUserData(data.userData);
+      setUserData(res);
     };
     fetchProfile();
   }, []);

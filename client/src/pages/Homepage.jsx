@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "../components/Navbar.jsx";
+import { Link } from "react-router-dom";
 
 const Homepage = () => {
   return (
@@ -20,9 +21,11 @@ const Homepage = () => {
           search—all in one place.
         </p>
         <div className="flex gap-4">
-          <button className="px-6 py-3 bg-green-500 text-white font-semibold rounded shadow hover:bg-green-600 transition">
-            Get Started
-          </button>
+          <Link to="/signup">
+            <button className="px-6 py-3 bg-green-500 text-white font-semibold rounded shadow hover:bg-green-600 transition">
+              Get Started
+            </button>
+          </Link>
           <button className="px-6 py-3 bg-transparent border border-green-500 text-green-400 font-semibold rounded hover:bg-green-600 hover:text-white transition">
             Learn More
           </button>

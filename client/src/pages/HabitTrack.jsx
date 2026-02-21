@@ -7,6 +7,7 @@ import HabitsToTrack from "../components/HabitsToTrack";
 import { auth } from "../firebase";
 import { DateTime } from "luxon";
 import { onAuthStateChanged } from "firebase/auth";
+import { fetchFromBackend } from "../api";
 
 const HabitTrack = () => {
   const [user, setUser] = useState(null);
@@ -20,7 +21,6 @@ const HabitTrack = () => {
   const [trackSleepModal, setTrackSleepModal] = useState(false);
   //for modal
   const [isOpen, setIsOpen] = useState(false);
-  const API_URL = import.meta.env.VITE_API_URL;
 
   const nowToronto = DateTime.now().setZone("America/Toronto");
   const currentYear = nowToronto.year;
@@ -59,18 +59,11 @@ const HabitTrack = () => {
       setUser(currentUser);
 
       try {
-        const res = await fetch(
-          `${API_URL}/api/users/months/${currentUser.uid}/${currentYear}/${currentMonth}`,
+        const res = await fetchFromBackend(
+          `/api/users/months/${currentUser.uid}/${currentYear}/${currentMonth}`,
         );
 
-        if (!res.ok) {
-          setCurrentMonthData(null);
-          setLoading(false);
-          return;
-        }
-
-        const data = await res.json();
-        setCurrentMonthData(data.month);
+        setCurrentMonthData(res.month || null);
       } catch (err) {
         console.log("Error fetching month:", err);
         setCurrentMonthData(null);
@@ -89,7 +82,7 @@ const HabitTrack = () => {
     // console.log(user.uid, currentYear, currentMonth, trackSleepModal);
 
     try {
-      const res = await fetch(`${API_URL}/api/users/months`, {
+      const res = await fetchFromBackend("/api/users/months", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -101,21 +94,8 @@ const HabitTrack = () => {
         }),
       });
 
-      if (!res.ok) {
-        try {
-          const errorData = await res.json();
-          console.error("Error adding month:", errorData.message || errorData);
-        } catch {
-          console.error("Error adding month: ", res.statusText);
-        }
-        return;
-      }
-
-      const data = await res.json();
-      // console.log("Month added:", data);
-
       // Update frontend state so tabs show immediately
-      setCurrentMonthData(data.month);
+      setCurrentMonthData(res.month);
 
       if (!data.month.trackSleep) {
         setActiveTab("memorable");

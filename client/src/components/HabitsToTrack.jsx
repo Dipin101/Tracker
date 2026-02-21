@@ -2,11 +2,11 @@ import React, { useRef, useState, useEffect } from "react";
 import { FaCheck, FaComment, FaHourglassHalf, FaTimes } from "react-icons/fa";
 import { auth } from "../firebase";
 import { DateTime } from "luxon";
+import { fetchFromBackend } from "../api";
 
 const MAX_HABITS = 10;
 
 const HabitsToTrack = () => {
-  // State
   const [savedHabits, setSavedHabits] = useState([]);
   const [habitStatuses, setHabitStatuses] = useState({});
   const [habitComments, setHabitComments] = useState({});
@@ -17,49 +17,28 @@ const HabitsToTrack = () => {
   const [currentCommentIndex, setCurrentCommentIndex] = useState(null);
   const [currentCommentText, setCurrentCommentText] = useState("");
 
-  // Refs
   const inputRefs = useRef([]);
   const commentRefs = useRef(null);
 
-  //url
-  const API_URL = import.meta.env.VITE_API_URL;
-
-  // Date
-  // const today = new Date().toISOString().split("T")[0]; //--> Standard gmt time
-  //simulated
-  // const simulatedDate = new Date();
-  // simulatedDate.setDate(simulatedDate.getDate() + 1); // add 1 day
-  // const today = simulatedDate.toISOString().split("T")[0];
-  // YYYY-MM-DD -->EDT time
-  const nowToronto = DateTime.now().setZone("America/Toronto"); // current Toronto time
-  const today = nowToronto.toFormat("yyyy-MM-dd"); // for keys and payloads
-  const currentMonth = String(nowToronto.month).padStart(2, "0"); // 1–12
+  const nowToronto = DateTime.now().setZone("America/Toronto");
+  const today = nowToronto.toFormat("yyyy-MM-dd");
+  const currentMonth = String(nowToronto.month).padStart(2, "0");
   const displayMonth = nowToronto.toFormat("LLLL yyyy");
 
-  // Status constants
   const STATUS = {
     COMPLETED: "completed",
     NOT_DONE: "not completed",
     IN_PROGRESS: "in progress",
   };
 
-  // Open add habits modal
-  const openModal = () => {
-    if (savedHabits.length >= MAX_HABITS) return;
-    setModalInputs([""]);
-    setShowModal(true);
-  };
-
+  // Fetch habits on mount
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        fetchHabits(user);
-      }
+      if (user) fetchHabits(user);
     });
     return () => unsubscribe();
   }, []);
 
-  // Focus first input on modal open
   useEffect(() => {
     if (showModal && modalInputs.length > 0) {
       const lastIndex = modalInputs.length - 1;
@@ -67,14 +46,24 @@ const HabitsToTrack = () => {
     }
   }, [showModal, modalInputs.length]);
 
-  // Add new habit input in modal
+  useEffect(() => {
+    if (showCommentModal) {
+      commentRefs.current?.focus();
+    }
+  }, [showCommentModal]);
+
+  const openModal = () => {
+    if (savedHabits.length >= MAX_HABITS) return;
+    setModalInputs([""]);
+    setShowModal(true);
+  };
+
   const addHabitInput = () => {
     if (modalInputs.length + savedHabits.length < MAX_HABITS) {
       setModalInputs([...modalInputs, ""]);
     }
   };
 
-  // Update modal input
   const updateModalInput = (index, value) => {
     const updated = [...modalInputs];
     updated[index] = value;
@@ -82,7 +71,6 @@ const HabitsToTrack = () => {
     validateModalInputs(updated);
   };
 
-  // Validate modal inputs
   const validateModalInputs = (inputs) => {
     const errors = {};
     inputs.forEach((habit, index) => {
@@ -104,14 +92,12 @@ const HabitsToTrack = () => {
     setModalError(errors);
   };
 
-  // Remove modal input
   const removeModalInput = (index) => {
     const updated = modalInputs.filter((_, i) => i !== index);
     setModalInputs(updated);
     validateModalInputs(updated);
   };
 
-  // Save habits from modal
   const handleSave = () => {
     const cleaned = modalInputs
       .map((h) => h.trim())
@@ -141,37 +127,25 @@ const HabitsToTrack = () => {
     setHabitComments(comments);
     setShowModal(false);
 
-    //send new habits to backend
+    // send to backend
     handleSubmitHabits(newSaved, statuses, comments);
   };
 
-  // Toggle habit status
   const toggleStatus = (index, status) => {
     setHabitStatuses((prev) => {
       const updated = { ...prev };
-
-      // If today already exists, override
-      if (updated[index]) {
-        updated[index][today] = status;
-      } else {
-        updated[index] = { [today]: status };
-      }
-
-      // send immediately to backend
+      updated[index] = { ...updated[index], [today]: status };
       handleSubmitHabits(savedHabits, updated, habitComments);
-
       return updated;
     });
   };
 
-  // Open comment modal
   const openCommentModal = (index) => {
     setCurrentCommentIndex(index);
     setCurrentCommentText(habitComments[index]?.[today]?.text || "");
     setShowCommentModal(true);
   };
 
-  // Save comment
   const saveComment = () => {
     if (currentCommentIndex !== null) {
       setHabitComments((prev) => {
@@ -182,63 +156,22 @@ const HabitsToTrack = () => {
             [today]: { text: currentCommentText, date: today },
           },
         };
-
-        // Send updated comments to backend
         handleSubmitHabits(savedHabits, habitStatuses, updated);
-
         return updated;
       });
     }
-
     setShowCommentModal(false);
     setCurrentCommentIndex(null);
     setCurrentCommentText("");
-    commentRefs.current = null; // clean up ref
+    commentRefs.current = null;
   };
 
-  // Auto-reset for new day
-  useEffect(() => {
-    const updatedStatuses = { ...habitStatuses };
-    const updatedComments = { ...habitComments };
-
-    savedHabits.forEach((_, index) => {
-      if (!updatedStatuses[index]?.[today]) {
-        updatedStatuses[index] = {
-          ...updatedStatuses[index],
-          [today]: STATUS.IN_PROGRESS,
-        };
-      }
-      if (!updatedComments[index]?.[today]) {
-        updatedComments[index] = {
-          ...updatedComments[index],
-          [today]: { text: "", date: today },
-        };
-      }
-    });
-
-    setHabitStatuses(updatedStatuses);
-    setHabitComments(updatedComments);
-  }, [savedHabits, today]);
-
-  // Focus comment textarea on modal open
-  useEffect(() => {
-    if (showCommentModal) {
-      commentRefs.current?.focus();
-    }
-  }, [showCommentModal]);
-
-  const remainingHabits = MAX_HABITS - savedHabits.length;
-  const buttonClasses = "w-14 flex justify-center px-2 py-1 rounded";
-
-  //sending to backend
   const handleSubmitHabits = async (saved, statuses, comments) => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const todayMonth = currentMonth;
     const todayYear = nowToronto.year;
 
-    //getting all habits
     const habitsPayload = saved.map((habit, index) => ({
       title: habit,
       status: Object.entries(statuses[index] || {}).map(([date, status]) => ({
@@ -255,68 +188,42 @@ const HabitsToTrack = () => {
 
     const payload = {
       userId: user.uid,
-      month: todayMonth,
+      month: currentMonth,
       year: todayYear,
       habits: habitsPayload,
     };
 
     try {
-      const res = await fetch(`${API_URL}/api/users/habits`, {
+      const res = await fetchFromBackend("/api/users/habits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        console.error(
-          "Error saving habits:",
-          data.message || "Failed to save habits.",
-        );
-        return;
-      }
-
-      // console.log("Habits saved successfully!", data);
+      // no need to call res.json() here, fetchFromBackend already does that
+      // console.log("Habits saved!", res);
     } catch (err) {
       console.error("Server error while saving habits:", err);
     }
   };
 
-  const fetchHabits = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
+  const fetchHabits = async (user) => {
     const currentYear = nowToronto.year;
-
     try {
-      const res = await fetch(
-        `${API_URL}/api/users/habits/${user.uid}?month=${currentMonth}&year=${currentYear}`,
+      const res = await fetchFromBackend(
+        `/api/users/habits/${user.uid}?month=${currentMonth}&year=${currentYear}`,
       );
-      const data = await res.json();
-
-      // console.log(data);
-      if (!res.ok) {
-        console.error("Failed to fetch habits:", data.message);
-        return;
-      }
-
-      if (data && Array.isArray(data.habits) && data.habits.length > 0) {
-        // extract titles
-        const loadedHabits = data.habits.map((h) => h.title);
-
-        // build statuses and comments
+      if (res && Array.isArray(res.habits) && res.habits.length > 0) {
+        const loadedHabits = res.habits.map((h) => h.title);
         const loadedStatuses = {};
         const loadedComments = {};
 
-        data.habits.forEach((habit, index) => {
+        res.habits.forEach((habit, index) => {
           loadedStatuses[index] = {};
           loadedComments[index] = {};
 
           habit.status.forEach((s) => {
             loadedStatuses[index][s.date] = s.status;
           });
-
           habit.comment.forEach((c) => {
             loadedComments[index][c.date] = { text: c.text, date: c.date };
           });
@@ -330,6 +237,9 @@ const HabitsToTrack = () => {
       console.error("Error fetching habits:", err);
     }
   };
+
+  const remainingHabits = MAX_HABITS - savedHabits.length;
+  const buttonClasses = "w-14 flex justify-center px-2 py-1 rounded";
 
   return (
     <div className="p-4 bg-green-300 rounded shadow flex flex-col gap-4 text-black h-[calc(60vh-8rem)]">

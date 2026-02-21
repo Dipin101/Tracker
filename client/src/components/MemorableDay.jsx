@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { auth } from "../firebase";
 import { DateTime } from "luxon";
+import { fetchFromBackend } from "../api";
 
 const MemorableDay = ({ onAdd }) => {
   const MAX_SUMMARY_LENGTH = 100;
@@ -18,7 +19,6 @@ const MemorableDay = ({ onAdd }) => {
   const day = String(nowToronto.day).padStart(2, "0");
   const month = String(nowToronto.month).padStart(2, "0");
   const year = nowToronto.year;
-  const API_URL = import.meta.env.VITE_API_URL;
 
   // Fetch today's summary
   useEffect(() => {
@@ -30,15 +30,9 @@ const MemorableDay = ({ onAdd }) => {
       }
 
       try {
-        const res = await fetch(
-          `${API_URL}/api/users/memorable/${user.uid}/${year}/${month}/${day}`,
+        const data = await fetchFromBackend(
+          `/api/users/memorable/${user.uid}/${year}/${month}/${day}`,
         );
-        if (!res.ok) {
-          // setLoading(false);
-          return;
-        }
-
-        const data = await res.json();
         // console.log(data);
         if (data && data.summary) {
           setSummary(data.summary);
@@ -62,7 +56,7 @@ const MemorableDay = ({ onAdd }) => {
     if (!user) return;
 
     try {
-      const res = await fetch(`${API_URL}/api/users/memorable`, {
+      const data = await fetchFromBackend("/api/users/memorable", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -74,12 +68,6 @@ const MemorableDay = ({ onAdd }) => {
           journal,
         }),
       });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setErrorMessage(data.message || "Failed to add summary.");
-        return;
-      }
 
       setSuccessMessage(data.message || "Summary added successfully!");
       setErrorMessage("");

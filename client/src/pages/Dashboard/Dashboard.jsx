@@ -5,12 +5,13 @@ import QuoteCard from "../../components/QuoteCard";
 import StreakCard from "../../components/StreakCard";
 import CompletionCard from "../../components/CompletionCard";
 import SleepCompletion from "../../components/SleepCompletion";
+import { fetchFromBackend } from "../../api";
 
 const Dashboard = () => {
   const [userName, setUserName] = useState(null);
   // const [sleepAvg, setSleepAvg] = useState(6.8); // dummy hours
   // const [streak, setStreak] = useState(12); // dummy days
-  const API_URL = import.meta.env.VITE_API_URL;
+  // const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -18,7 +19,7 @@ const Dashboard = () => {
 
       const idToken = await user.getIdToken();
 
-      const res = await fetch(`${API_URL}/api/users/getUser`, {
+      const res = await fetchFromBackend("/api/users/getUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,8 +27,7 @@ const Dashboard = () => {
         },
       });
 
-      const data = await res.json();
-      if (res.ok) setUserName(data.name);
+      setUserName(res.name);
     });
 
     return () => unsubscribe();
