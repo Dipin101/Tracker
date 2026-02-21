@@ -39,10 +39,10 @@ const HabitTrack = () => {
   const isOpenModal = () => setIsOpen(true);
 
   useEffect(() => {
-    if (!currentMonthData?.trackSleep && activeTab === "sleep") {
+    if (!currentMonthData?.trackSleep && activeTab === "sleep" && !loading) {
       setActiveTab("memorable");
     }
-  }, [currentMonthData, activeTab]);
+  }, [currentMonthData, activeTab, loading]);
 
   //for state to be active
   useEffect(() => {
