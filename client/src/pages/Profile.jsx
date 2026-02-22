@@ -18,8 +18,9 @@ const Profile = () => {
           Authorization: `Bearer ${idToken}`,
         },
       });
-      // console.log(data);
-      setUserData(res);
+      // const data = await res.json();
+      console.log("Fetched", res.userData);
+      setUserData(res.userData);
     };
     fetchProfile();
   }, []);

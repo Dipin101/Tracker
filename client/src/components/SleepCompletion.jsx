@@ -16,7 +16,7 @@ const MonthlySleepCompletion = () => {
       const currentYear = nowToronto.year;
       const currentMonth = String(nowToronto.month).padStart(2, "0");
 
-      console.log(currentYear, currentMonth);
+      // console.log(currentYear, currentMonth);
 
       try {
         // /avgsleep/:userId/:year/:month

@@ -29,7 +29,7 @@ const SleepCycle = ({ startDate }) => {
 
   //Actual date parsed with luxon
   const start = DateTime.fromISO(startDate, { zone: "America/Toronto" });
-  console.log(start);
+  // console.log(start);
   const year = start.year;
   const month = start.month; // 1-12
   const totalDays = start.endOf("month").day;
@@ -73,7 +73,7 @@ const SleepCycle = ({ startDate }) => {
           `/api/users/sleep/${user.uid}/${year}/${month}`,
         );
         // Convert minutes to hours
-        console.log(data);
+        // console.log(data);
         const newSleepData = labels.map((day) => {
           const record = data.find((d) => Number(d.day) === day);
           return record ? record.hours / 60 : null;

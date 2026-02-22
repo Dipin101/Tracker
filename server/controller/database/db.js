@@ -23,10 +23,10 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000, // fail fast if connection is bad
     });
 
-    console.log("✅ MongoDB connected successfully");
+    console.log("MongoDB connected successfully");
   } catch (error) {
     console.error(
-      "❌ MongoDB connection failed:",
+      "MongoDB connection failed:",
       error.message,
       "\nFalling back to local MongoDB...",
     );
@@ -39,9 +39,9 @@ const connectDB = async () => {
           useNewUrlParser: true,
           useUnifiedTopology: true,
         });
-        console.log("✅ Fallback to local MongoDB successful");
+        console.log("Fallback to local MongoDB successful");
       } catch (err) {
-        console.error("❌ Local fallback failed:", err.message);
+        console.error("Local fallback failed:", err.message);
         process.exit(1);
       }
     } else {
