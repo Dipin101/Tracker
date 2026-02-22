@@ -97,7 +97,7 @@ const HabitTrack = () => {
       // Update frontend state so tabs show immediately
       setCurrentMonthData(res.month);
 
-      if (!data.month.trackSleep) {
+      if (!res.month.trackSleep) {
         setActiveTab("memorable");
         localStorage.setItem("activeTab", "memorable");
       }
