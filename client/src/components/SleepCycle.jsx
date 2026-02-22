@@ -29,6 +29,7 @@ const SleepCycle = ({ startDate }) => {
 
   //Actual date parsed with luxon
   const start = DateTime.fromISO(startDate, { zone: "America/Toronto" });
+  console.log(start);
   const year = start.year;
   const month = start.month; // 1-12
   const totalDays = start.endOf("month").day;
@@ -102,7 +103,7 @@ const SleepCycle = ({ startDate }) => {
         },
         body: JSON.stringify({
           userId: user.uid,
-          year: start.getFullYear(),
+          year: start.year,
           month: String(month).padStart(2, "0"),
           day: String(day).padStart(2, "0"),
           hour: sleepMinutes,
