@@ -25,13 +25,19 @@ app.use(
 );
 app.use(express.json());
 
-// connect to MongoDB
-connectDB();
-
 // your existing routes
 app.use("/api/users", userRoutes);
+// Connect to DB and only then start server
+const startServer = async () => {
+  try {
+    await connectDB(); // wait until DB is connected
+    app.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err.message);
+    process.exit(1);
+  }
+};
 
-// start server
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+startServer();
