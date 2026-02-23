@@ -227,6 +227,10 @@ const HabitsToTrack = () => {
           habit.comment.forEach((c) => {
             loadedComments[index][c.date] = { text: c.text, date: c.date };
           });
+
+          if (!loadedStatuses[index][today]) {
+            loadedStatuses[index][today] = STATUS.IN_PROGRESS;
+          }
         });
 
         setSavedHabits(loadedHabits);
@@ -288,6 +292,7 @@ const HabitsToTrack = () => {
             {savedHabits.map((habit, index) => (
               <li key={index} className="flex items-center border-b py-1">
                 <span className="flex-1 capitalize">{habit}</span>
+
                 <div className="flex flex-1 justify-between text-sm">
                   <button
                     onClick={() => toggleStatus(index, STATUS.COMPLETED)}
