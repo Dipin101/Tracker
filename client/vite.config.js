@@ -10,9 +10,4 @@ export default defineConfig({
   optimizeDeps: {
     include: ["firebase/app", "firebase/auth", "react-icons/ai"],
   },
-  server: {
-    fs: {
-      strict: false,
-    },
-  },
 });
