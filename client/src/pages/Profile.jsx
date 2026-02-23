@@ -19,7 +19,6 @@ const Profile = () => {
         },
       });
       // const data = await res.json();
-      console.log("Fetched", res.userData);
       setUserData(res.userData);
     };
     fetchProfile();
