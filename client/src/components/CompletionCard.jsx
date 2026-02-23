@@ -30,8 +30,8 @@ const CompletionCard = () => {
           body: JSON.stringify({ userId: user.uid }),
         });
 
+        console.log(res);
         setHabits(res.habits || []);
-        // console.log(data);
       } catch (err) {
         console.error("Error fetching today's habits:", err);
       }

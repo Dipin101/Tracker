@@ -17,7 +17,7 @@ dotenv.config();
 app.use(
   cors({
     origin: [
-      "https://habit-tracker-three-ivory.vercel.app", //for render
+      "https://habit-tracker-three-ivory.vercel.app/", //for render
       "http://localhost:5173", //for local
     ],
     credentials: true, // allow cookies
