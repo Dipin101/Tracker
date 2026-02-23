@@ -9,6 +9,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       const user = auth.currentUser;
       if (!user) return;
+
       const idToken = await user.getIdToken();
       // console.log("token", idToken);
       const res = await fetchFromBackend("/api/users/getProfile", {
