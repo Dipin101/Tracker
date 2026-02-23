@@ -6,7 +6,7 @@ const getAvgSleep = async (req, res) => {
 
     const habitsDoc = await Habits.findOne({ userId });
     if (!habitsDoc) return res.status(404).json({ message: "No habits found" });
-    console.log(month, year);
+    // console.log("This is from average Sleep", month, year);
     // Find the month
     const monthData = habitsDoc.months.find(
       (m) => m.year === parseInt(year) && m.month === month,

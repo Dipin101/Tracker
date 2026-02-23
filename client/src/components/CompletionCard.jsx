@@ -22,15 +22,12 @@ const CompletionCard = () => {
     const fetchHabits = async () => {
       const user = auth.currentUser;
       if (!user) return;
-
       try {
         const res = await fetchFromBackend("/api/users/today-completion", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId: user.uid }),
         });
-
-        console.log(res);
         setHabits(res.habits || []);
       } catch (err) {
         console.error("Error fetching today's habits:", err);
