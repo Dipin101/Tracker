@@ -5,9 +5,14 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   base: "/",
-  build: { outDir: "dist" },
+  build: { outDir: "dist", chunkSizeWarningLimit: 1000 },
   plugins: [react(), tailwindcss()],
   optimizeDeps: {
     include: ["firebase/app", "firebase/auth", "react-icons/ai"],
+  },
+  server: {
+    fs: {
+      strict: false,
+    },
   },
 });
